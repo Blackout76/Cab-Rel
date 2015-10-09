@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 
+import General.Cab;
 import General.Logger;
 import General.Logger.Logger_type;
 
@@ -53,7 +54,12 @@ public class MapArea {
 
 	private void generateBridge(ArrayList<JSONObject> bridgesList) {
 		this.bridges = new ArrayList<>();
-		for(JSONObject bridge: bridgesList)
-			this.bridges.add(new Mapbridge(bridge));
+		for(JSONObject bridge: bridgesList){
+			String startVertice = bridge.get("from").toString() ;
+			String endArea = ( (JSONObject) bridge.get("to") ).get("area").toString() ;
+			String endVertice = ( (JSONObject) bridge.get("to") ).get("vertex").toString() ;
+			float weight = Float.parseFloat(bridge.get("weight").toString());
+			this.bridges.add(new Mapbridge(startVertice, endArea, endVertice, weight));
+		}
 	}
 }

@@ -3,11 +3,15 @@ package Map;
 import org.json.simple.JSONObject;
 
 public class Mapbridge {
-	private MapVertice startVertice;
-	private MapVertice endVertice;
+	private String startVertice;
+	private String endArea;
+	private String endVertice;
 	private float weight;
 
-	public Mapbridge(JSONObject bridge) {
-		// TODO Auto-generated constructor stub
+	public Mapbridge(String startVertice2,String endArea2, String endVertice2,float weight) {
+		this.startVertice = startVertice2;
+		this.endArea = endArea2;
+		this.endVertice = this.endVertice;
+		this.weight = weight;
 	}
 }
