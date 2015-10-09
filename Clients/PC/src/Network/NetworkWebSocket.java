@@ -37,16 +37,21 @@ public class NetworkWebSocket {
  
     @OnWebSocketConnect
     public void onConnect(Session session) {
-        System.out.printf("Got connect: %s%n", session);
         this.session = session;
     }
  
     @OnWebSocketMessage
     public void onMessage(String msg) {
-        System.out.printf("Got msg: %s%n", msg);
+       System.out.println("Message recu:" + msg);
     }
     
     public void sendMessage(String message){
         session.getRemote().sendStringByFuture(message);
     }
+
+	public boolean isConnected() {
+		if(this.session.isOpen())
+			return true;
+		return false;
+	}
 }
