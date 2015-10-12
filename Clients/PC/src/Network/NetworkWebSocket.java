@@ -1,4 +1,5 @@
 package Network;
+import java.util.Observable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +20,7 @@ import General.Logger.Logger_type;
  * Basic Echo Client Socket
  */
 @WebSocket(maxTextMessageSize = 64 * 1024)
-public class NetworkWebSocket {
+public class NetworkWebSocket extends Observable  {
  
     private final CountDownLatch closeLatch;
  
@@ -52,12 +53,15 @@ public class NetworkWebSocket {
        JSONParser parser = new JSONParser();
        JSONObject json = null;
        try { json = (JSONObject) parser.parse(msg);} catch (ParseException e) {}
-       if(json.containsKey("areas"))
-    	   Cab.mapManager.loadMap(json);
+       setChanged();
+       notifyObservers(json);
     }
     
     public void sendMessage(String message){
-    	try {session.getRemote().sendString(message);} catch (Exception e) {e.printStackTrace();}
+    	if(session.isOpen())
+    		try {session.getRemote().sendString(message);} catch (Exception e) {e.printStackTrace();}
+    	else
+    		Logger.log(Logger_type.ERROR, "[WEBSOCKET]", "Socket is closed!");
     }
 
 	public boolean isConnected() {

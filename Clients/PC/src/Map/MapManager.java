@@ -2,18 +2,17 @@ package Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.json.simple.JSONObject;
 
+import General.Cab;
 import General.Logger;
 import General.Logger.Logger_type;
 
-public class MapManager {
+public class MapManager extends Observable implements Observer{
 	private HashMap<String,MapArea> areas;
-
-	public MapManager (){
-		
-	}
 	
 	@SuppressWarnings("unchecked")
 	public void loadMap(JSONObject mapJson){
@@ -26,5 +25,13 @@ public class MapManager {
 
 	public MapArea getAreaByName(String name){
 		return this.areas.get(name);
+	}
+
+	@Override
+	public void update(Observable o, Object obj) {
+		if(((HashMap) obj).get("areas") !=  null){
+			this.loadMap(new JSONObject((HashMap) obj));
+			Cab.renderer.generateArea(getAreaByName("Quartier Sud"));
+		}
 	}
 }

@@ -62,4 +62,23 @@ public class MapArea {
 			this.bridges.add(new Mapbridge(startVertice, endArea, endVertice, weight));
 		}
 	}
+
+	public HashMap<String, MapStreet> getStreets() {
+		return this.streets;
+	}
+	public HashMap<String, MapVertice> getVertices() {
+		return this.vertices;
+	}
+	public ArrayList<Mapbridge> getBridges() {
+		return this.bridges;
+	}
+	public float getHeight(){
+		return this.height;
+	}
+	public float getWidth(){
+		return this.width;
+	}
+	public String getName(){
+		return this.name;
+	}
 }

@@ -1,6 +1,8 @@
 package Network;
 
 import java.net.URI;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.client.HttpClient;
@@ -10,6 +12,7 @@ import org.json.simple.JSONObject;
 
 import General.Logger;
 import General.Logger.Logger_type;
+import Map.MapManager;
 
 public class NetworkManager implements Runnable{
 	private final String SERVER_URL = "http://37.187.127.119/clickn3D/WEB_services/request_client.php";
@@ -72,5 +75,10 @@ public class NetworkManager implements Runnable{
 	public void run() {
     	if(SERVER_URI == null) return;
     	ConnectToSocket(this.SERVER_URI);
+	}
+
+	public void addObserver(Observer mapManager) {
+		if(this.webSocket != null)
+			this.webSocket.addObserver(mapManager);
 	}
 }

@@ -6,15 +6,20 @@ import java.io.InputStreamReader;
 
 import Map.MapManager;
 import Network.NetworkManager;
+import Render.IHM;
 
 public class Cab implements Runnable{
-	public static NetworkManager networkManager;
-	public static MapManager mapManager;
+	private NetworkManager networkManager;
+	private MapManager mapManager;
+	public static IHM renderer;
+	
 	
 	public Cab(){
-		Thread t = new Thread(networkManager = new NetworkManager());
-		t.start();
+		renderer = new IHM();
 		mapManager = new MapManager();
+		Thread t = new Thread(networkManager = new NetworkManager());t.start();
+		try {Thread.sleep(500);} catch (InterruptedException e) {} //Waiting ready webSocket
+		networkManager.addObserver(mapManager);
 	}
 
 	@Override

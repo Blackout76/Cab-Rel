@@ -21,13 +21,13 @@ public class MapStreet {
 		return 0;
 	}
 	
-	private String getName(){
+	public String getName(){
 		return this.name;
 	}
-	private ArrayList<MapVertice> getPath(){
+	public ArrayList<MapVertice> getPath(){
 		return this.path;
 	}
-	private boolean isOneway(){
+	public boolean isOneway(){
 		return this.oneway;
 	}
 	
