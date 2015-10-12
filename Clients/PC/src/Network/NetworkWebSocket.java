@@ -1,52 +1,72 @@
 package Network;
+import java.util.Observable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.StatusCode;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import General.Cab;
+import General.Logger;
+import General.Logger.Logger_type;
  
 /**
  * Basic Echo Client Socket
  */
 @WebSocket(maxTextMessageSize = 64 * 1024)
-public class NetworkWebSocket {
+public class NetworkWebSocket extends Observable  {
  
     private final CountDownLatch closeLatch;
  
-    @SuppressWarnings("unused")
     private Session session;
  
     public NetworkWebSocket() {
-        this.closeLatch = new CountDownLatch(1);
+        this.closeLatch = new CountDownLatch(100);
     }
- 
+
     public boolean awaitClose(int duration, TimeUnit unit) throws InterruptedException {
         return this.closeLatch.await(duration, unit);
     }
  
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        System.out.printf("Connection closed: %d - %s%n", statusCode, reason);
+        Logger.log(Logger_type.ERROR, "WebSocket", "Connection closed !" + reason);
         this.session = null;
         this.closeLatch.countDown();
     }
  
     @OnWebSocketConnect
     public void onConnect(Session session) {
-        System.out.printf("Got connect: %s%n", session);
         this.session = session;
+        Logger.log(Logger_type.SUCCESS, "WebSocket", "Connected !");
     }
  
     @OnWebSocketMessage
     public void onMessage(String msg) {
-        System.out.printf("Got msg: %s%n", msg);
+       //System.out.println("Message recu:" + msg);
+       JSONParser parser = new JSONParser();
+       JSONObject json = null;
+       try { json = (JSONObject) parser.parse(msg);} catch (ParseException e) {}
+       setChanged();
+       notifyObservers(json);
     }
     
     public void sendMessage(String message){
-        session.getRemote().sendStringByFuture(message);
+    	if(session.isOpen())
+    		try {session.getRemote().sendString(message);} catch (Exception e) {e.printStackTrace();}
+    	else
+    		Logger.log(Logger_type.ERROR, "[WEBSOCKET]", "Socket is closed!");
     }
+
+	public boolean isConnected() {
+		if(this.session.isOpen())
+			return true;
+		return false;
+	}
 }
