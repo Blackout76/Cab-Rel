@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import javax.swing.JPanel;
 
 import Map.MapArea;
+import Map.MapBridge;
 import Map.MapStreet;
 import Map.MapVertice;
 
@@ -23,7 +24,6 @@ public class RenderArea extends JPanel {
     private List<Point[]> lines;
     private ArrayList<RenderStreet> renderStreets;
     private ArrayList<RenderVertice> renderVertices;
-    private RenderRestrictZone renderRestrict;
 
     public RenderArea() {
         lines = new ArrayList<>();
@@ -34,22 +34,27 @@ public class RenderArea extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 startPoint = e.getPoint();
+                System.err.println(startPoint);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                endPoint = e.getPoint();
-                Point[] points = new Point[]{startPoint, endPoint};
-                lines.add(points);
-                startPoint = null;
-                endPoint = null;
-                repaint();
+            	if(IHM.drawingTools){
+	                endPoint = e.getPoint();
+	                Point[] points = new Point[]{startPoint, endPoint};
+	                lines.add(points);
+	                startPoint = null;
+	                endPoint = null;
+	                repaint();
+            	}
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                endPoint = e.getPoint();
-                repaint();
+            	if(IHM.drawingTools){
+	                endPoint = e.getPoint();
+	                repaint();
+            	}
             }
 
         };
@@ -85,17 +90,23 @@ public class RenderArea extends JPanel {
     }
 
 	public void renderArea(MapArea mapArea) {
-	    int scale_x = (int)(this.getWidth() / mapArea.getWidth()); 
-	    int scale_y = (int)(this.getHeight() / mapArea.getHeight()); 
-	    renderStreets(scale_x,scale_y,mapArea.getStreets());
-	    renderVertices(scale_x,scale_y,mapArea.getVertices());
+		
+	    int scale_x = (int)(IHM.windowWidth / mapArea.getWidth()); 
+	    int scale_y = (int)(IHM.windowHeight / mapArea.getHeight()); 
+	    //System.err.println(scale_x + "  " + scale_y);
+	    renderStreets(scale_x-IHM.offset_limit_x,scale_y-IHM.offset_limit_y,mapArea.getStreets());
+	    renderVertices(scale_x-IHM.offset_limit_x,scale_y-IHM.offset_limit_y,mapArea);
         repaint();
 	}
 	
-	private void renderVertices(int scale_x, int scale_y,HashMap<String, MapVertice> vertices) {
+	private void renderVertices(int scale_x, int scale_y,MapArea mapArea) {
 		this.renderVertices = new ArrayList<>();
-		for(Entry<String, MapVertice> entry : vertices.entrySet()) {
-	        this.renderVertices.add(new RenderVertice(scale_x,scale_y,entry));
+		for(Entry<String, MapVertice> entryVertice : mapArea.getVertices().entrySet()) {
+			boolean isBridge = false;
+			for(MapBridge entryBridge : mapArea.getBridges())
+				if(entryBridge.getStartVertice().equals(entryVertice.getValue().getName()))
+					isBridge = true;
+	        this.renderVertices.add(new RenderVertice(scale_x,scale_y,entryVertice,isBridge));
 	    }
 	}
 

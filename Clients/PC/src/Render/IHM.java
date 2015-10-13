@@ -8,15 +8,20 @@ import javax.swing.JFrame;
 import Map.MapArea;
 
 public class IHM extends JFrame {
-    public final int windowWidth = 800;
-    public final int windowHeight = 600;
+    public static final int windowWidth = 600;
+    public static final int windowHeight = 600;
+    public static final int offset_limit = 15;
+    public static final int offset_limit_x = 17;
+    public static final int offset_limit_y = 35;
+    public static final boolean drawingTools = false;
     public final String windowName = "Cab-Rel Client";
     private RenderArea area;
+    
     
 	public IHM() {
 		init();
 		area = new RenderArea();
-		area.setSize(getWidth(), getHeight());
+		area.setSize(windowWidth, windowHeight);
 		add(area, BorderLayout.CENTER);
 		area.setVisible(true);
 	}
