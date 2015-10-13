@@ -15,7 +15,7 @@ public class MapArea {
 	private float height;
 	private HashMap<String,MapVertice> vertices;
 	private HashMap<String,MapStreet> streets;
-	private ArrayList<Mapbridge> bridges;
+	private ArrayList<MapBridge> bridges;
 	
 	@SuppressWarnings("unchecked")
 	public MapArea (JSONObject areaJson){
@@ -59,7 +59,7 @@ public class MapArea {
 			String endArea = ( (JSONObject) bridge.get("to") ).get("area").toString() ;
 			String endVertice = ( (JSONObject) bridge.get("to") ).get("vertex").toString() ;
 			float weight = Float.parseFloat(bridge.get("weight").toString());
-			this.bridges.add(new Mapbridge(startVertice, endArea, endVertice, weight));
+			this.bridges.add(new MapBridge(startVertice, endArea, endVertice, weight));
 		}
 	}
 
@@ -69,7 +69,7 @@ public class MapArea {
 	public HashMap<String, MapVertice> getVertices() {
 		return this.vertices;
 	}
-	public ArrayList<Mapbridge> getBridges() {
+	public ArrayList<MapBridge> getBridges() {
 		return this.bridges;
 	}
 	public float getHeight(){

@@ -29,6 +29,7 @@ public class MapManager extends Observable implements Observer{
 
 	@Override
 	public void update(Observable o, Object obj) {
+	
 		if(((HashMap) obj).get("areas") !=  null){
 			this.loadMap(new JSONObject((HashMap) obj));
 			Cab.renderer.generateArea(getAreaByName("Quartier Sud"));
