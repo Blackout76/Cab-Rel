@@ -25,13 +25,10 @@ class Area:
 			self.verticesDict[newVerticeJson["name"]] = newVertice
 
 	def initStreet(self, streets):
-		print "initStreet"
 		for newStreetJson in streets:
 			verticeList = []
 			for vertice in newStreetJson["path"]:
-				print self.verticesDict
 				verticeList.append(self.verticesDict[vertice])
-				print vertice
 
 			newStreet = Street(newStreetJson["name"], verticeList, newStreetJson["oneway"])
 			self.streetsDict[newStreetJson["name"]] = newStreet
@@ -40,4 +37,32 @@ class Area:
 		for newBridgeJson in bridges:
 			newBridge = Bridge(newBridgeJson["from"], newBridgeJson["weight"])
 			self.bridgesList.append(newBridge)
+
+	def ToJsonFormat(self):
+		area = {}
+		area["name"] = self.areaName
+		mapComposition = {}
+		weight = {}
+		weight["w"] = self.weightWidth
+		weight["h"] = self.weightHeight
+		mapComposition["weight"] = weight
+
+		vertices = []
+		for vertexToJson in self.verticesDict:
+			vertices.append(self.verticesDict[vertexToJson].ToJsonFormat())
+		mapComposition["vertices"] = vertices
+
+		streets = []
+		for streetsToJson in self.streetsDict:
+			streets.append(self.streetsDict[streetsToJson].ToJsonFormat())
+		mapComposition["streets"] = streets
+		
+		bridges = []
+		for brigesToJson in self.bridgesList:
+			bridges.append(brigesToJson.ToJsonFormat())
+		mapComposition["bridges"] = bridges
+
+		area["map"] = mapComposition
+		return area
+
 

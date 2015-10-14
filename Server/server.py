@@ -6,6 +6,7 @@ from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer
 import urlparse
 import threading
 import sys
+from MapManager import *
 
 ip = "192.168.1.44"
 port_HTTP = 8080
@@ -90,6 +91,7 @@ class WebSocketDevice(WebSocket):
         print 'Device ' + self.address + 'closed'
 
 if __name__ == '__main__':
+    MapManager = MapManager("NomMap")
     thread_server_http = ServerHTTP("1")
     thread_server_http.start()
     thread_server_client = NetworkServerSocketClient("2")
