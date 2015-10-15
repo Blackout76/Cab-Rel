@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Map.Entry;
 
+import org.json.simple.JSONObject;
+
 import Map.MapVertice;
 
 public class RenderVertice {

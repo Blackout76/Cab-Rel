@@ -2,6 +2,7 @@ package Render;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,6 +23,7 @@ import Map.MapVertice;
 public class RenderArea extends JPanel {
     private Point startPoint, endPoint;
     private List<Point[]> lines;
+    private RenderTaxi renderTaxi;
     private ArrayList<RenderStreet> renderStreets;
     private ArrayList<RenderVertice> renderVertices;
 
@@ -29,6 +31,7 @@ public class RenderArea extends JPanel {
         lines = new ArrayList<>();
         renderStreets = new ArrayList<>();
         renderVertices = new ArrayList<>();
+        renderTaxi = new RenderTaxi();
         
         MouseAdapter ma = new MouseAdapter() {
             @Override
@@ -72,20 +75,32 @@ public class RenderArea extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
+        
+        // Draw Background
+        GradientPaint gp = new GradientPaint(0, 0, new Color(119, 215, 255), 0, IHM.windowHeight, new Color(0, 60, 255));
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, IHM.windowWidth, IHM.windowHeight);
+        
+        //all last line created for TEST
         g2d.setColor(Color.BLACK);
-        //System.err.println(lines.size());
         for (Point[] p : lines) {
             g2d.drawLine(p[0].x, p[0].y, p[1].x, p[1].y);
         }
+        
+        //current line
         if (startPoint != null && endPoint != null) {
             g2d.setColor(Color.RED);
             g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
         }
-        //	renderRestrict.render(getWidth(), getHeight(), g2d);
+        //Render area
         for(RenderStreet renderObject: renderStreets)
         	renderObject.render(g2d);
         for(RenderVertice renderObject: renderVertices)
         	renderObject.render(g2d);
+        
+        //Render Taxi
+        renderTaxi.render(g2d);
+        
         g2d.dispose();
     }
 
