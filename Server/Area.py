@@ -35,7 +35,7 @@ class Area:
 
 	def initBridge(self, bridges):
 		for newBridgeJson in bridges:
-			newBridge = Bridge(newBridgeJson["from"], newBridgeJson["weight"])
+			newBridge = Bridge(self.verticesDict[newBridgeJson["from"]],newBridgeJson)
 			self.bridgesList.append(newBridge)
 
 	def ToJsonFormat(self):

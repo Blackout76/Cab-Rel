@@ -17,10 +17,11 @@ class MapManager:
 		jsonMap.close()
 
 	def LoadJsonMap(self, data):
-		self.initArea(data)
+		mapData = data["areas"]
+		self.initArea(mapData)
 
 	def initArea(self, Areas):
-		for newAreaJson in Areas["areas"]:
+		for newAreaJson in Areas:
 			newArea = Area(newAreaJson)
 			self.areasDict[newAreaJson["name"]] = newArea
 
@@ -28,4 +29,5 @@ class MapManager:
 		areas = []
 		for areasToJson in self.areasDict:
 			 areas.append(self.areasDict[areasToJson].ToJsonFormat())
+		print json.dumps(areas)
 		return json.dumps(areas)
