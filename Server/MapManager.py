@@ -43,11 +43,11 @@ class MapManager:
 			self.areasDict[newAreaJson["name"]] = newArea
 
 	##	Return the map to format json
-	def ToJsonFormat(self):
+	def toDictFormat(self):
 		#the list of areas
 		areas = []
 		#for all areas in self.areasDict
 		for areasToJson in self.areasDict:
 			#format the areas to json
-			areas.append(self.areasDict[areasToJson].ToJsonFormat())
-		return json.dumps(areas)
+			areas.append(self.areasDict[areasToJson].toDictFormat())
+		return areas

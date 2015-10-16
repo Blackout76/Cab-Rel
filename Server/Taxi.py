@@ -14,5 +14,5 @@ class Taxi:
 		self.loc_now = Location(taxiInfo["loc_now"], mapManagerTaxi)
 		self.loc_prior = Location(taxiInfo["loc_prior"], mapManagerTaxi)
 
-	def toJsonFormat(self):
+	def toDictFormat(self):
 		print "to do"

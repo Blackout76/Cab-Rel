@@ -58,28 +58,31 @@ class Area:
 			self.bridgesList.append(newBridge)
 
 	##	Return the area in a dictionary
-	def ToJsonFormat(self):
+	def toDictFormat(self):
+		#initialise the area dictionary
 		area = {}
 		area["name"] = self.areaName
+		#initialise area["map"]
 		mapComposition = {}
+		#initialise weight
 		weight = {}
 		weight["w"] = self.weightWidth
 		weight["h"] = self.weightHeight
 		mapComposition["weight"] = weight
-
+		#initialise the list of vertices for the area dictionary
 		vertices = []
 		for vertexToJson in self.verticesDict:
-			vertices.append(self.verticesDict[vertexToJson].ToJsonFormat())
+			vertices.append(self.verticesDict[vertexToJson].toDictFormat())
 		mapComposition["vertices"] = vertices
-
+		#initialise the list of streets for the area dictionary
 		streets = []
 		for streetsToJson in self.streetsDict:
-			streets.append(self.streetsDict[streetsToJson].ToJsonFormat())
+			streets.append(self.streetsDict[streetsToJson].toDictFormat())
 		mapComposition["streets"] = streets
-		
+		#initialise the list of bridges for the area dictionary
 		bridges = []
 		for brigesToJson in self.bridgesList:
-			bridges.append(brigesToJson.ToJsonFormat())
+			bridges.append(brigesToJson.toDictFormat())
 		mapComposition["bridges"] = bridges
 
 		area["map"] = mapComposition
