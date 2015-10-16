@@ -5,8 +5,11 @@ from TestMapManager import *
 
 
 class Location:
-	def __init__(self, locationData):
-		print "to do"
+	def __init__(self, locationData, mapManagerTaxi):
+		self.areaLocation = mapManagerTaxi.areasDict[locationData[]]
+		if locationData["locationType"] == "street":
+			self.location = mapManagerTaxi.
+		else:
 
 
 	def toJsonFormat(self):
