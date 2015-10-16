@@ -9,6 +9,13 @@ byte mac[] =  { 0x98, 0x4F, 0xEE, 0x05, 0x35, 0x20 };
 IPAddress ip(192, 168, 1, 225);
 
 
+//define IpAdress and port of Http Server
+EthernetClient clientHttp;
+IPAddress httpAdress(192, 168, 1, 50);
+int httpPort = 800;
+String adrServ;
+String prtServ;
+
 // define some values used by the panel and buttons
 int lcd_key = 0;
 int adc_key_in = 0;
@@ -23,17 +30,28 @@ int adc_key_in = 0;
 void setup()
 {
   Serial.begin(9600);
+  //Configure 
   Ethernet.begin(mac, ip);
 
   //print out the IP address
   Serial.print("IP = ");
   Serial.println(Ethernet.localIP());
-
 }
 
 
 void loop()
 {
+  //Check if connect to server Http
+  if (clientHttp.connected())
+  {
+     delay(1000);
+     Serial.print("connecté");
+  }
+  else
+  {
+    delay(1000);
+     Serial.print("Non connecté");
+  }
   //Manage the button
   lcd_key = read_LCD_buttons(); // read the buttons
   switch (lcd_key) // depending on which button was pushed, we perform an action
@@ -56,6 +74,10 @@ void loop()
       }
     case btnSELECT:
       {
+        Serial.print("Clique select");
+        delay(1000);
+         connectServerHttp(httpAdress, httpPort);
+         closeConnectionHttp();
         break;
       }
     case btnNONE:
@@ -65,7 +87,63 @@ void loop()
   }
 }
 
+//Function  Connect to Http server and get Ip and port of WebServer
+void connectServerHttp(IPAddress ipServer, int portServer)
+{
 
+  String getHttp = "";
+  adrServ = "";
+  prtServ = "";
+  char tmp;
+  bool adr = false;
+
+  int erreur = clientHttp.connect(httpAdress, httpPort);
+  if (clientHttp.connected())
+  {
+    clientHttp.println("GET /deviceConnect HTTP/1.0");
+    clientHttp.println();
+    int cpt = 1;
+    int i = 0;
+    bool cond = false;
+    while (clientHttp.available())
+    {
+      char c = clientHttp.read();
+      Serial.print(c);
+      if (adr)
+      {
+        if (c == ':')
+        {
+          cond = true;
+        }
+        else
+        {
+          if (cond == true) prtServ += c;
+
+          else  adrServ += c;
+        }
+      }
+      if (c == '/' and tmp == '/') adr = true;
+      tmp = c;
+
+    }
+
+    Serial.println("adr :" + adrServ);
+    Serial.print("prt: " + prtServ);
+
+  }
+  else
+  {
+    Serial.println("connection failed");
+  }
+}
+
+// Function for Close Http Client
+void closeConnectionHttp()
+{
+   //disconnect to Http
+    clientHttp.stop();
+    Serial.print("Connection to Http server is close");
+}
 
 // read the buttons
 int read_LCD_buttons()
