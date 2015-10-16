@@ -8,6 +8,8 @@ class CabRequest:
 	def __init__(self, requestInfo, mapManagerTaxi):
 		self.areaRequest = mapLoaded.areasDict[requestInfo["area"]]
 		self.locationRequest = Location(requestInfo["location"], mapManagerTaxi)
+		print self.areaRequest
+		print self.locationRequest
 
-	def toJsonFormat(self):
+	def toDictFormat(self):
 		print "to do"

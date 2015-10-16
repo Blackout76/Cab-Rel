@@ -30,5 +30,5 @@ class Bridge:
 		bridgeTo["area"] = self.bridgeToArea
 		bridgeTo["vertex"] = self.bridgeToVertex
 		bridge["to"] = bridgeTo
-		bridge["weight"] = self.bridgeWeight
+		bridge["weight"] = self.bridgeWeight	
 		return bridge
