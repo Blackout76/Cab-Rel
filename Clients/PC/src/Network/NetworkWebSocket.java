@@ -14,9 +14,10 @@ import org.json.simple.parser.ParseException;
 
 import General.Logger;
 import General.Logger.Logger_type;
+import General.Main;
  
 @WebSocket(maxTextMessageSize = 64 * 1024)
-public class NetworkWebSocket extends Observable  {
+public class NetworkWebSocket  {
  
     private final CountDownLatch closeLatch;
  
@@ -45,12 +46,15 @@ public class NetworkWebSocket extends Observable  {
  
     @OnWebSocketMessage
     public void onMessage(String msg) {
-       //System.out.println("Message recu:" + msg);
+       System.out.println("Message recu:" + msg);
        JSONParser parser = new JSONParser();
        JSONObject json = null;
        try { json = (JSONObject) parser.parse(msg);} catch (ParseException e) {}
-       setChanged();
-       notifyObservers(json);
+       executeMessage(json);
+    }
+    public void executeMessage(JSONObject json){
+    	if(json.get("areas") != null)
+    		Main.mapManager.loadMap(json);
     }
     
     public void sendMessage(String message){

@@ -50,10 +50,8 @@ public class NetworkManager implements Runnable{
 		
         try {
             client.start();
-            System.err.println(uri.toString());
             URI echoUri = new URI(String.format(uri, null));
             client.connect(webSocket, echoUri);
-            System.out.println("je suis ici !!!" + uri);
             webSocket.awaitClose(1, TimeUnit.HOURS);
         } catch (Throwable t) {
             t.printStackTrace();
@@ -87,8 +85,8 @@ public class NetworkManager implements Runnable{
     	ConnectToSocket(this.SERVER_URI);
 	}
 
-	public void addObserver(Observer mapManager) {
-		if(this.webSocket != null)
-			this.webSocket.addObserver(mapManager);
+	public void sendTaxiRequest(JSONObject json) {
+		this.webSocket.sendMessage(json.toJSONString());
 	}
+
 }
