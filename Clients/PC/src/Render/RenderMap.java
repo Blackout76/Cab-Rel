@@ -6,7 +6,7 @@ public class RenderMap extends JFrame{
     private RenderArea area;
 	
     public RenderMap(){
-    	area = new RenderArea();
+    	area = new RenderArea(0,0);
 		add(area);
     }
 }

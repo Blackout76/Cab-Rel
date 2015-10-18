@@ -25,14 +25,14 @@ public class RenderVertice {
 		center.x = (int)(scale_x * entry.getValue().getX());
 		center.y = (int)(scale_y * entry.getValue().getY());
 		
-		if(center.x >= IHM.windowWidth-IHM.offset_limit_x)
-			center.x = IHM.windowWidth-IHM.offset_limit_x - IHM.offset_limit;
+		if(center.x >= RenderArea.width)
+			center.x = RenderArea.width - IHM.offsetBorder;
 		else if(center.x <= 0)
-			center.x = IHM.offset_limit;
-		if(center.y >= IHM.windowHeight-IHM.offset_limit_y)
-			center.y = IHM.windowHeight-IHM.offset_limit_y - IHM.offset_limit;
+			center.x =  IHM.offsetBorder;
+		if(center.y >= RenderArea.height)
+			center.y = RenderArea.height - IHM.offsetBorder;
 		else if(center.y <= 0)
-			center.y = IHM.offset_limit;
+			center.y =  IHM.offsetBorder;
 		name = entry.getValue().getName();
 	}
 

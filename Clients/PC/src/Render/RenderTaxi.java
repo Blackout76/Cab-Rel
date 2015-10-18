@@ -17,7 +17,7 @@ public class RenderTaxi implements Observer{
 	private Image img;
 	private Point position;
 	public RenderTaxi (){
-		position = new Point(IHM.windowWidth/2,IHM.windowHeight/2);
+		position = new Point(RenderArea.width/2,RenderArea.height/2);
 	    img = Toolkit.getDefaultToolkit().getImage(fileURL);
 	}
 	
