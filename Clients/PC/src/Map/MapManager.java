@@ -7,7 +7,7 @@ import java.util.Observer;
 
 import org.json.simple.JSONObject;
 
-import General.Cab;
+import General.Main;
 import General.Logger;
 import General.Logger.Logger_type;
 
@@ -32,7 +32,7 @@ public class MapManager extends Observable implements Observer{
 	
 		if(((HashMap) obj).get("areas") !=  null){
 			this.loadMap(new JSONObject((HashMap) obj));
-			Cab.renderer.generateArea(getAreaByName("Quartier Sud"));
+			Main.renderer.generateArea(getAreaByName("Quartier Sud"));
 		}
 	}
 }

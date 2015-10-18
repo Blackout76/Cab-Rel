@@ -12,13 +12,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import General.Cab;
 import General.Logger;
 import General.Logger.Logger_type;
  
-/**
- * Basic Echo Client Socket
- */
 @WebSocket(maxTextMessageSize = 64 * 1024)
 public class NetworkWebSocket extends Observable  {
  

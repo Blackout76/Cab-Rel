@@ -8,13 +8,13 @@ import Map.MapManager;
 import Network.NetworkManager;
 import Render.IHM;
 
-public class Cab implements Runnable{
+public class Main implements Runnable{
 	private NetworkManager networkManager;
 	private MapManager mapManager;
 	public static IHM renderer;
 	
 	
-	public Cab(){
+	public Main(){
 		renderer = new IHM();
 		mapManager = new MapManager();
 		Thread t = new Thread(networkManager = new NetworkManager());t.start();
@@ -40,7 +40,7 @@ public class Cab implements Runnable{
 	}
 
 	public static void main(String[] args){
-		Thread t = new Thread(new Cab());
+		Thread t = new Thread(new Main());
 		t.start();
 	}
 }

@@ -13,7 +13,7 @@ public class IHM extends JFrame {
     public static final int offset_limit = 15;
     public static final int offset_limit_x = 17;
     public static final int offset_limit_y = 35;
-    public static final boolean drawingTools = false;
+    public static final boolean drawingTools = true;
     public final String windowName = "Cab-Rel Client";
     private RenderArea area;
     

@@ -17,7 +17,7 @@ public class MapStreet {
 	}
 
 	public float getWeight(){
-		// TO DO
+		// TODO
 		return 0;
 	}
 	

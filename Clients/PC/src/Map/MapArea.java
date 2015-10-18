@@ -1,11 +1,13 @@
 package Map;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.json.simple.JSONObject;
 
-import General.Cab;
+import General.Main;
 import General.Logger;
 import General.Logger.Logger_type;
 
@@ -81,4 +83,18 @@ public class MapArea {
 	public String getName(){
 		return this.name;
 	}
+	public HashMap<String, Object> computeBestWayInterceptStreet(Point ori){
+		HashMap<String, Object> map = new HashMap<>();
+		Point impactPoint = new Point();
+		float distance = -1;
+
+	    for(Entry<String, MapStreet> street : streets.entrySet()) {
+			
+		}
+	    
+		map.put("distance", impactPoint);
+		map.put("impactPoint", impactPoint);
+		return null;
+	}
+	
 }
