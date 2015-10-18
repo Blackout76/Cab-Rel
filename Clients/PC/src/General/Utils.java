@@ -21,7 +21,6 @@ public class Utils {
 
 		double scal_cl_cg = vector_AB_x * vector_AC_x + vector_AB_y * vector_AC_y;
 		double angle_orient = Math.acos((scal_cl_cg)/(norme_AB*norme_AC)) *  (180/Math.PI);
-		
 		return angle_orient;
 	}
 
@@ -57,8 +56,19 @@ public class Utils {
 	private static HashMap<String, Double> computePointOfHeightIntercept(Double distHeight,Point A, Point B) {
 		HashMap<String, Double> result = new HashMap<>();
 		double angle_absis = computeAngleOrient(A,B,new Point( (int)(A.getX()+50) , (int) A.getY() ));
-		result.put("x" , A.getX() + Math.cos(angle_absis*(Math.PI/180))*distHeight);
-		result.put("y" , A.getY() + Math.cos(angle_absis*(Math.PI/180))*distHeight);
+		double norme_AB = Math.sqrt(Math.pow(B.getX() - A.getX(), 2)+Math.pow(B.getY() - A.getY(), 2));
+		if(distHeight <= 0){
+			result.put("x", A.getX());
+			result.put("y", A.getY());
+		}
+		else if(distHeight >= norme_AB){
+			result.put("x", B.getX());
+			result.put("y", B.getY());
+		}
+		else{
+			result.put("x" , A.getX() + Math.cos(angle_absis*(Math.PI/180))*distHeight);
+			result.put("y" , A.getY() + Math.cos(angle_absis*(Math.PI/180))*distHeight);
+		}
 		return result;
 	}
 	
