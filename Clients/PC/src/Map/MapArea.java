@@ -83,18 +83,9 @@ public class MapArea {
 	public String getName(){
 		return this.name;
 	}
-	public HashMap<String, Object> computeBestWayInterceptStreet(Point ori){
-		HashMap<String, Object> map = new HashMap<>();
-		Point impactPoint = new Point();
-		float distance = -1;
 
-	    for(Entry<String, MapStreet> street : streets.entrySet()) {
-			
-		}
-	    
-		map.put("distance", impactPoint);
-		map.put("impactPoint", impactPoint);
-		return null;
+	public MapStreet getStreetByName(String streetName) {
+		return this.streets.get(streetName);
 	}
 	
 }
