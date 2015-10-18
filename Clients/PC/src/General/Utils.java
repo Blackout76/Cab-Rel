@@ -21,4 +21,15 @@ public class Utils {
 		
 		return angle_orient;
 	}
+	
+	public static double computeHeightOfTriangle(Point A, Point B, Point C){
+		/*
+		 * Compute height of Triangle
+		 */
+		double angle = computeAngleOrient(A,B,C);
+		double norme_AC = Math.sqrt(Math.pow(C.getX() - A.getX(), 2)+Math.pow(C.getY() - A.getY(), 2));
+		double height = Math.sin(angle*(Math.PI/180))*norme_AC;
+		return height;
+	}
+	
 }
