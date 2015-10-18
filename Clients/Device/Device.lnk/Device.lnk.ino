@@ -1,13 +1,14 @@
 #include "Arduino.h"
 #include <Ethernet.h>
 #include <SPI.h>
-
+#include <WebSocketClient.h>
 
 // adress mac of the shield
 byte mac[] =  { 0x98, 0x4F, 0xEE, 0x05, 0x35, 0x20 };
 // the arduino's Ip Adresse
 IPAddress ip(192, 168, 1, 225);
 
+char* idCab = "32";
 
 //define IpAdress and port of Http Server
 EthernetClient clientHttp;
@@ -15,6 +16,9 @@ IPAddress httpAdress(192, 168, 1, 50);
 int httpPort = 800;
 String adrServ;
 String prtServ;
+
+//EthernetClient clientHttp;
+WebSocketClient wsClient;
 
 // define some values used by the panel and buttons
 int lcd_key = 0;
@@ -76,6 +80,7 @@ void loop()
       {
         Serial.print("Clique select");
         delay(1000);
+        //Connect to Http server and get the Ip and port for Web server
          connectServerHttp(httpAdress, httpPort);
          closeConnectionHttp();
         break;
@@ -129,20 +134,56 @@ void connectServerHttp(IPAddress ipServer, int portServer)
 
     Serial.println("adr :" + adrServ);
     Serial.print("prt: " + prtServ);
+      
+    //adding the chain end character
+    adrServ.concat("\0");
 
+    openConnectionWeb(adrServ,prtServ.toInt() );
   }
   else
   {
     Serial.println("connection failed");
   }
 }
-
+ 
 // Function for Close Http Client
 void closeConnectionHttp()
 {
    //disconnect to Http
     clientHttp.stop();
     Serial.print("Connection to Http server is close");
+}
+
+//Function for open Web Client
+void openConnectionWeb(String ipWebServer, int portWebServer)
+{
+   //Open the WebSocket Client
+    if(wsClient.connected()) Serial.print("webS connect");
+    else Serial.print("webS  non connect");
+    wsClient.connect(strToChar(ipWebServer),portWebServer);
+    wsClient.onOpen(onOpen);
+    wsClient.onMessage(onMessage); 
+}
+
+// Function for Close Web client
+void closeConnectionWeb()
+{
+  
+}
+
+void onOpen(WebSocketClient client) 
+{
+  Serial.println("Connected to server");
+}
+
+void onMessage(WebSocketClient client, char* message) 
+{
+  Serial.print("Received: "); Serial.println(message);   
+}
+
+void onError(WebSocketClient client, char* message) {
+  Serial.println("onError()");
+  Serial.print("ERROR: "); Serial.println(message);
 }
 
 // read the buttons
@@ -161,5 +202,10 @@ int read_LCD_buttons()
   return btnNONE; // when all others fail, return this...
 }
 
-
-
+char* strToChar(String s) 
+{
+  unsigned int bufSize = s.length() + 1; //String length + null terminator
+  char* ret = new char[bufSize];
+  s.toCharArray(ret, bufSize);
+  return ret;
+}
