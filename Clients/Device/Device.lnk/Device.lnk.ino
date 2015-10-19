@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <LiquidCrystal.h>
 #include <WebSocketClient.h>
-#include <ArduinoJson.h>
+#include <aJSON.h>
 
 //EthernetClient clientHttp;
 WebSocketClient wsClient;
@@ -37,6 +37,9 @@ String adrServ;
 String prtServ;
 char* idCab = "32";
 
+String areaNow;
+String streetNow;
+
 // define some values used by the panel and buttons
 int lcd_key = 0;
 int adc_key_in = 0;
@@ -51,7 +54,11 @@ int adc_key_in = 0;
 bool stateFreeCab = true;
 
 
-
+// function definitions
+void parseJson(char *jsonString) ;
+int read_LCD_buttons();
+void connectServer(IPAddress Adress , int HttpPort );
+void closeConnectionHttp();
 
 // read the buttons
 int read_LCD_buttons()
@@ -82,7 +89,7 @@ void setup()
   Serial.print("IP = ");
   Serial.println(Ethernet.localIP());
 
- // connectServer(httpAdress,httpPort );
+  // connectServer(httpAdress,httpPort );
 }
 
 void loop ()
@@ -90,19 +97,28 @@ void loop ()
   wsClient.monitor();
   if (wsClient.connected())
   {
-    //display the cab's state
-    lcd.setCursor(0, 0); // move to the begining of the first line
+
     if (stateFreeCab)
     {
+      lcd.setCursor(0, 0); // move to the begining of the first line
       lcd.print("FREE");
-    /*  char* str1 = "{\"cmd\": \"cabInfo\", \"idCab\":";
-      char* str2 = "}";
-      char * str3 = (char *) malloc(1 + strlen(str1) + strlen(idCab) + strlen(str2) );
-      strcpy(str3, str1);
-      strcat(str3, idCab);
-      strcat(str3, str2);*/
+      /*  char* str1 = "{\"cmd\": \"cabInfo\", \"idCab\":";
+        char* str2 = "}";
+        char * str3 = (char *) malloc(1 + strlen(str1) + strlen(idCab) + strlen(str2) );
+        strcpy(str3, str1);
+        strcat(str3, idCab);
+        strcat(str3, str2);*/
       wsClient.send("{\"cmd\": \"info\"}");
       wsClient.onMessage(onMessage);
+      lcd.setCursor(0, 1);
+      //lcd.print("Salut");
+      Serial.println(areaNow);
+      lcd.print(areaNow + ", " + streetNow);
+      lcd.scrollDisplayLeft();
+      //display the cab's state
+      lcd.setCursor(0, 0); // move to the begining of the first line
+      lcd.print("FREE");
+      delay(200);
     }
     else
     {
@@ -110,9 +126,6 @@ void loop ()
     }
 
     wsClient.onError(onError);
-    // wsClient.send("{\"cmd\": \"info\"}");
-
-    // displayCabInfo("toto");
   }
 
   //Manage the button
@@ -149,7 +162,7 @@ void loop ()
       }
     case btnNONE:
       {
-       
+
       }
   }
 }
@@ -240,10 +253,99 @@ void onOpen(WebSocketClient client)
 
 void onMessage(WebSocketClient client, char* message)
 {
-  Serial.print("Received: "); Serial.println(message);
-  
-  delay(5000);
+  Serial.println("Received: "); Serial.println(message);
 
+  parseJson(message);
+
+}
+
+void parseJson(char *jsonString)
+{
+  aJsonObject* root = aJson.parse(jsonString);
+  if (root != NULL)
+  {
+    //Serial.println("Parsed successfully 2 " );
+    aJsonObject* cabInfo = aJson.getObjectItem(root, "cabInfo");
+
+    if (cabInfo != NULL)
+    {
+      //Serial.println("Parsed successfully 3 " );
+      aJsonObject* locnow = aJson.getObjectItem(cabInfo, "locnow");
+
+      if (locnow != NULL)
+      {
+        //Serial.println("Parsed successfully 4 " );
+        aJsonObject* area = aJson.getObjectItem(locnow, "area");
+        //Serial.println("Parsed successfully 4 " );
+        aJsonObject* street = aJson.getObjectItem(locnow, "street");
+
+        if (area != NULL)
+        {
+          //Serial.println("Parsed successfully 5 " );
+          areaNow = area->valuestring;
+        }
+        if (street != NULL)
+        {
+          //Serial.println("Parsed successfully 5 " );
+          streetNow = street->valuestring;
+        }
+      }
+
+      //Serial.println("Parsed successfully 3 " );
+      aJsonObject* request = aJson.getObjectItem(cabInfo, "request");
+
+      if (request != NULL)
+      {
+        aJsonObject* area = aJson.getObjectItem(request, "area");
+        aJsonObject* street = aJson.getObjectItem(request, "street");
+
+        if (area != NULL)
+        {
+          Serial.println( area->valuestring);
+        }
+        if (street != NULL)
+        {
+          areaNow = street->valuestring;
+        }
+        else
+        {
+          Serial.println("street est null");
+          Serial.print(request->valuestring);
+        }
+      } else {
+        Serial.println("request est null");
+      }
+    }
+    
+    //Serial.println("Parsed successfully 2 " );
+    aJsonObject* cabQueue = aJson.getObjectItem(root, "cabQueue");
+ if (cabQueue != NULL)
+    {
+      //Serial.println("Parsed successfully 3 " );
+      aJsonObject* area = aJson.getObjectItem(cabQueue, "area");
+
+       //Serial.println("Parsed successfully 3 " );
+      aJsonObject* location = aJson.getObjectItem(cabQueue, "location");
+
+      if(location!= NULL)
+      {
+         //Serial.println("Parsed successfully 3 " );
+          aJsonObject* locationType = aJson.getObjectItem(location, "locationType");
+          if(locationType != NULL)
+          {
+            if(locationType->valuestring.equals("street"))
+            {
+              
+            }
+            else
+            {
+              
+            }
+          }
+      }
+    }
+
+  }
 }
 
 void onError(WebSocketClient client, char* message) {
