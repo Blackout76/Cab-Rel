@@ -7,19 +7,26 @@ import java.util.Observer;
 
 import org.json.simple.JSONObject;
 
-import General.Cab;
+import General.Main;
 import General.Logger;
 import General.Logger.Logger_type;
 
-public class MapManager extends Observable implements Observer{
+public class MapManager extends Observable {
 	private HashMap<String,MapArea> areas;
 	
 	@SuppressWarnings("unchecked")
 	public void loadMap(JSONObject mapJson){
 		this.areas = new HashMap<String, MapArea>();
-		for(JSONObject area: (ArrayList<JSONObject>)mapJson.get("areas"))
+		String areaToLoad = null;
+		for(JSONObject area: (ArrayList<JSONObject>)mapJson.get("areas")){
 			this.areas.put((String)area.get("name"),new MapArea(area));
+			areaToLoad = (String)area.get("name");
+		}
 		Logger.log(Logger_type.SUCCESS, "MAP", "map generated !");
+		
+		/* Draw last area loaded */
+		if(areaToLoad != null)
+			Main.renderer.generateArea(areas.get(areaToLoad));
 	}
 	
 
@@ -27,12 +34,4 @@ public class MapManager extends Observable implements Observer{
 		return this.areas.get(name);
 	}
 
-	@Override
-	public void update(Observable o, Object obj) {
-	
-		if(((HashMap) obj).get("areas") !=  null){
-			this.loadMap(new JSONObject((HashMap) obj));
-			Cab.renderer.generateArea(getAreaByName("Quartier Sud"));
-		}
-	}
 }

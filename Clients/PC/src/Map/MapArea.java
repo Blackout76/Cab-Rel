@@ -1,11 +1,13 @@
 package Map;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.json.simple.JSONObject;
 
-import General.Cab;
+import General.Main;
 import General.Logger;
 import General.Logger.Logger_type;
 
@@ -81,4 +83,9 @@ public class MapArea {
 	public String getName(){
 		return this.name;
 	}
+
+	public MapStreet getStreetByName(String streetName) {
+		return this.streets.get(streetName);
+	}
+	
 }

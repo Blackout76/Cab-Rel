@@ -15,19 +15,25 @@ import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
+import General.Main;
 import Map.MapArea;
 import Map.MapBridge;
 import Map.MapStreet;
 import Map.MapVertice;
 
 public class RenderArea extends JPanel {
+	public static int width = 0;
+	public static int height = 0;
     private Point startPoint, endPoint;
     private List<Point[]> lines;
     private RenderTaxi renderTaxi;
     private ArrayList<RenderStreet> renderStreets;
     private ArrayList<RenderVertice> renderVertices;
 
-    public RenderArea() {
+    public RenderArea(int width, int height) {
+    	this.width = width;
+    	this.height = height;
+    	
         lines = new ArrayList<>();
         renderStreets = new ArrayList<>();
         renderVertices = new ArrayList<>();
@@ -37,7 +43,7 @@ public class RenderArea extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 startPoint = e.getPoint();
-                System.err.println(startPoint);
+                Main.taxiManager.createRequestAtPoint(startPoint);
             }
 
             @Override
@@ -77,9 +83,9 @@ public class RenderArea extends JPanel {
         Graphics2D g2d = (Graphics2D) g.create();
         
         // Draw Background
-        GradientPaint gp = new GradientPaint(0, 0, new Color(119, 215, 255), 0, IHM.windowHeight, new Color(0, 60, 255));
+        GradientPaint gp = new GradientPaint(0, 0, new Color(119, 215, 255), 0, this.height, new Color(0, 60, 255));
         g2d.setPaint(gp);
-        g2d.fillRect(0, 0, IHM.windowWidth, IHM.windowHeight);
+        g2d.fillRect(0, 0, this.width, this.height);
         
         //all last line created for TEST
         g2d.setColor(Color.BLACK);
@@ -106,11 +112,11 @@ public class RenderArea extends JPanel {
 
 	public void renderArea(MapArea mapArea) {
 		
-	    int scale_x = (int)(IHM.windowWidth / mapArea.getWidth()); 
-	    int scale_y = (int)(IHM.windowHeight / mapArea.getHeight()); 
+	    int scale_x = (int)(this.width / mapArea.getWidth()); 
+	    int scale_y = (int)(this.height / mapArea.getHeight()); 
 	    //System.err.println(scale_x + "  " + scale_y);
-	    renderStreets(scale_x-IHM.offset_limit_x,scale_y-IHM.offset_limit_y,mapArea.getStreets());
-	    renderVertices(scale_x-IHM.offset_limit_x,scale_y-IHM.offset_limit_y,mapArea);
+	    renderStreets(scale_x,scale_y,mapArea.getStreets());
+	    renderVertices(scale_x,scale_y,mapArea);
         repaint();
 	}
 	

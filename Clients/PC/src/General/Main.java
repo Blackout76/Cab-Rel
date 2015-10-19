@@ -1,5 +1,6 @@
 package General;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,19 +8,23 @@ import java.io.InputStreamReader;
 import Map.MapManager;
 import Network.NetworkManager;
 import Render.IHM;
+import Taxi.TaxiManager;
 
-public class Cab implements Runnable{
-	private NetworkManager networkManager;
-	private MapManager mapManager;
+public class Main implements Runnable{
+	public static NetworkManager networkManager;
+	public static MapManager mapManager;
+	public static TaxiManager taxiManager;
 	public static IHM renderer;
 	
 	
-	public Cab(){
+	public Main(){
 		renderer = new IHM();
 		mapManager = new MapManager();
-		Thread t = new Thread(networkManager = new NetworkManager());t.start();
+		taxiManager = new TaxiManager();
+		
+		Thread t = new Thread(networkManager = new NetworkManager());
 		try {Thread.sleep(500);} catch (InterruptedException e) {} //Waiting ready webSocket
-		networkManager.addObserver(mapManager);
+		t.start();
 	}
 
 	@Override
@@ -40,7 +45,7 @@ public class Cab implements Runnable{
 	}
 
 	public static void main(String[] args){
-		Thread t = new Thread(new Cab());
+		Thread t = new Thread(new Main());
 		t.start();
 	}
 }

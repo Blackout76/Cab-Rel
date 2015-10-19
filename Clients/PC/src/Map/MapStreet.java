@@ -17,7 +17,7 @@ public class MapStreet {
 	}
 
 	public float getWeight(){
-		// TO DO
+		// TODO
 		return 0;
 	}
 	
@@ -26,6 +26,9 @@ public class MapStreet {
 	}
 	public ArrayList<MapVertice> getPath(){
 		return this.path;
+	}
+	public String getPathString(){
+		return this.path.get(0).toString() + "" + this.path.get(1).toString();
 	}
 	public boolean isOneway(){
 		return this.oneway;

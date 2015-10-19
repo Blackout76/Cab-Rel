@@ -1,1 +1,1 @@
-include ':app', ':Java-WebSocket-master'
+include ':app'
