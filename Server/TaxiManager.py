@@ -65,7 +65,7 @@ class TaxiManager:
 	def toDictFormatCabRequest():
 		#initialise the liste of cab request not accept
 		cabRequests = []
-		#for each request in the request list
+		#for each request in the request list add the json of the request
 		for request in self.cabRequestList:
 			cabRequests.append(request.toDictFormat())
 		return cabRequests
