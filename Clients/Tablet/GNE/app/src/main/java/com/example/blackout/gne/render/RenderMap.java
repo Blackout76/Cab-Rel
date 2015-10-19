@@ -15,7 +15,6 @@ public class RenderMap {
 
     public void render(int iWidth, int iHeight, Canvas canvas) {
         area.render(iWidth, iHeight,canvas);
-
     }
 
 

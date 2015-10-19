@@ -6,21 +6,27 @@ import android.graphics.Picture;
 import android.graphics.Point;
 import android.media.Image;
 import android.widget.ImageView;
+
+import com.example.blackout.gne.R;
+
 import java.util.Observable;
 
 
 public class RenderTaxi {
-	private final String fileURL = "images/taxi.png";
+
 	private ImageView img;
 	private Point position;
+
 	public RenderTaxi (){
-		//position = new Point(IHM.windowWidth/2,IHM.windowHeight/2);
-	    //img = Toolkit.getDefaultToolkit().getImage(fileURL);
+        position = new Point((int)(RenderView.width/2),(int)(RenderView.height/2));
+
 	}
 	
-	public void render(Canvas g2d){
+	public void render(Canvas canvas){
 
-		//g2d.drawImage(img, position.x-img.getWidth(null)/2, position.y-img.getHeight(null)/2, null);
+        img.setImageResource(R.mipmap.taxi);
+        
+		//canvas.drawImage(img, position.x-img.getWidth(null)/2, position.y-img.getHeight(null)/2, null);
 		//Bitmap b = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
 		//g2d= new Canvas(b);
        // ImageView iv = (ImageView)findViewById(R.id.my_imageView);

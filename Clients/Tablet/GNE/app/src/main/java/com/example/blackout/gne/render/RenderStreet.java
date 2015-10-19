@@ -25,11 +25,11 @@ public class RenderStreet{
         	pts[i].y = (int) (scale_y * street.getPath().get(i).getY());
         }
 	}
-
+    
 	public void render(Canvas canvas) {
 
 		Paint paint=new Paint();
-        paint.setStrokeWidth(2.5f);
+        paint.setStrokeWidth(4.0f);
         canvas.drawLine(pts[0].x, pts[0].y, pts[1].x, pts[1].y,paint );
 
 

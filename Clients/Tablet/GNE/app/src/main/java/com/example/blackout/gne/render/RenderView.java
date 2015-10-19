@@ -5,12 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 
 import com.example.blackout.gne.Map.MapArea;
 
-public class RenderView extends View {
+public class RenderView extends View  {
     RenderMap renderMap;
     public static float height, width;
     String name;
@@ -23,8 +24,6 @@ public class RenderView extends View {
         this.height=getContext().getResources().getDisplayMetrics().heightPixels;
         this.width=getContext().getResources().getDisplayMetrics().widthPixels;
 
-        Log.e("height", ""+height);
-        Log.e("width", ""+width);
 
     }
 
