@@ -5,11 +5,13 @@ import urlparse
 import sys
 
 devices = []
+portWebSocketDevice = 2589
+server_device = None
 
 class NetworkServerSocketDevice(Thread):
-	def __init__(self, lettre, port):
+	def __init__(self, lettre):
 		Thread.__init__(self)
-		self.server = SimpleWebSocketServer('', port, DeviceWebSocket)
+		self.server = SimpleWebSocketServer('', portWebSocketDevice, DeviceWebSocket)
 		print 'WEBSOCKET devices listenning ...'
 
 	def run(self):
