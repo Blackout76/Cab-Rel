@@ -11,9 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by blackout on 15/10/2015.
- */
+
 public class HTTP extends AsyncTask<String, Integer, String> {
     public AsyncResponse delegate=null;
 

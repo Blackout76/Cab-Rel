@@ -1,6 +1,9 @@
 package com.example.blackout.gne.render;
 
-import com.example.ameliepereira.interfacecab.*;
+import android.graphics.Canvas;
+
+import com.example.blackout.gne.MainActivity;
+import com.example.blackout.gne.Map.MapArea;
 
 public class RenderMap {
     private RenderArea area;
@@ -8,11 +11,15 @@ public class RenderMap {
     public RenderMap(){
     	area = new RenderArea();
 
-        area=new RenderArea();
     }
 
-    public void render(int iWidth, int iHeight, String areaName) {
-        area.renderArea(iWidth,iHeight,MainActivity.map.getAreaByName(areaName));
+    public void render(int iWidth, int iHeight, Canvas canvas) {
+        area.render(iWidth, iHeight,canvas);
 
+    }
+
+
+    public void loadRender(int width, int height, String areaName) {
+        area.loadArea(width, height, MainActivity.mapManager.getAreaByName(areaName));
     }
 }

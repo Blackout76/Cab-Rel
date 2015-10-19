@@ -1,39 +1,44 @@
 package com.example.blackout.gne.render;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 
-import Map.MapArea;
-
+import com.example.blackout.gne.Map.MapArea;
 
 public class RenderView extends View {
     RenderMap renderMap;
-
-    float height, width;
+    public static float height, width;
     String name;
+    public static int offSetBorder=30;
 
-    public RenderView(Context context, MapArea area) {
+    public RenderView(Context baseContext) {
 
-        super(context);
+        super(baseContext);
         renderMap=new RenderMap();
-
+        this.height=getContext().getResources().getDisplayMetrics().heightPixels;
+        this.width=getContext().getResources().getDisplayMetrics().widthPixels;
+        Log.e("height", ""+height);
+        Log.e("width", ""+width);
 
     }
 
 
     // Dessiner sur la totalité de l'écran
     public void onDraw(Canvas canvas) {
-        canvas.drawRGB(0, 0, 0);
 
-        //instance pour donner une taille de l'écran
         Paint paint = new Paint();
-        int iWidth = canvas.getWidth();
-        int iHeight = canvas.getHeight();
-       renderMap.render(iWidth, iHeight, "Quartier Nord");
-        //for()
-        //canvas.drawLine(streets.get(0).getX(),streets.get(1).getY(),streets.get(2).getX(),streets.get(3).getY());
-    }
 
+        renderMap.render((int)this.width,(int)this.height, canvas);
+
+    }
+    public void loadRender(String areaName)
+    {
+        renderMap.loadRender((int) this.width, (int) this.height, areaName);
+
+    }
 }

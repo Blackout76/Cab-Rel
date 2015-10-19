@@ -4,17 +4,20 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
+import com.example.blackout.gne.Map.MapStreet;
+
 import java.util.Map.Entry;
 
-import Map.MapStreet;
 
 public class RenderStreet{
 	
 	private Point[] pts;
 	
 	public RenderStreet(int scale_x, int scale_y,Entry<String, MapStreet> entry) {
+        
         String streetName = entry.getKey();
         MapStreet street = entry.getValue();
+
         pts = new Point[street.getPath().size()];
         for(int i=0;i< street.getPath().size() ; i++){
         	pts[i] = new Point();
