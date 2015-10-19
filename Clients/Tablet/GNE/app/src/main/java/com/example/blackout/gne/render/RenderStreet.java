@@ -14,7 +14,7 @@ public class RenderStreet{
 	private Point[] pts;
 	
 	public RenderStreet(int scale_x, int scale_y,Entry<String, MapStreet> entry) {
-        
+
         String streetName = entry.getKey();
         MapStreet street = entry.getValue();
 
@@ -27,9 +27,11 @@ public class RenderStreet{
 	}
 
 	public void render(Canvas canvas) {
+
 		Paint paint=new Paint();
-        //canvas.setStroke(new BasicStroke(5));
+        paint.setStrokeWidth(2.5f);
         canvas.drawLine(pts[0].x, pts[0].y, pts[1].x, pts[1].y,paint );
+
 
 	}
 }

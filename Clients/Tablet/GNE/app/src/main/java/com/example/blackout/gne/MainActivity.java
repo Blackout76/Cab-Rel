@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ihm.loadRender("Quartier Nord");
+       // ihm.loadRender("Quartier Nord");
+        ihm.loadRender("Quartier Sud");
         // TEST HTTP
        /* HTTP request=new HTTP();
         request.delegate = this;

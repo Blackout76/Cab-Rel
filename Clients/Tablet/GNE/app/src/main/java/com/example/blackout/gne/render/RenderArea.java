@@ -26,9 +26,9 @@ public class RenderArea  {
 	public void loadArea(int iWidth, int iHeight, MapArea mapArea) {
 		
 	    int scale_x = (int)(iWidth/ mapArea.getWidth());
-        Log.e("iwidth", ""+iWidth);
+        //Log.e("iwidth", ""+iWidth);
 	    int scale_y = (int)(iHeight/ mapArea.getHeight());
-        Log.e("iheight", ""+iHeight);
+        //Log.e("iheight", ""+iHeight);
 	    renderStreets(scale_x, scale_y, mapArea.getStreets());
 	    renderVertices(scale_x, scale_y, mapArea);
 	}
@@ -54,9 +54,17 @@ public class RenderArea  {
 	}
 
 	public void render(int iWidth, int iHeight, Canvas canvas) {
+
+        //print streets
+        for(RenderStreet rs: this.renderStreets)
+        {
+            rs.render(canvas);
+        }
+        //print vertices
 		for(RenderVertice rv: this.renderVertices)
 		{
 			rv.render(iWidth, iHeight, canvas);
 		}
+
 	}
 }

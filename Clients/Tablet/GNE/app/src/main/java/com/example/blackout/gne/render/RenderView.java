@@ -22,13 +22,14 @@ public class RenderView extends View {
         renderMap=new RenderMap();
         this.height=getContext().getResources().getDisplayMetrics().heightPixels;
         this.width=getContext().getResources().getDisplayMetrics().widthPixels;
+
         Log.e("height", ""+height);
         Log.e("width", ""+width);
 
     }
 
 
-    // Dessiner sur la totalité de l'écran
+
     public void onDraw(Canvas canvas) {
 
         Paint paint = new Paint();

@@ -34,13 +34,13 @@ public class RenderVertice {
 		if(center.x >= RenderView.width-RenderView.offSetBorder)
 			center.x = (int)(RenderView.width - RenderView.offSetBorder);
 
-		else if(center.x <= 0)
+		else if(center.x <= RenderView.offSetBorder)
 			center.x = RenderView.offSetBorder;
 
-		if(center.y >= RenderView.height)
+		if(center.y >= RenderView.height-RenderView.offSetBorder)
 			center.y = (int)(RenderView.height-RenderView.offSetBorder);
 
-		else if(center.y <= 0)
+		else if(center.y <= RenderView.offSetBorder)
 			center.y = RenderView.offSetBorder;
 
 		name = entry.getValue().getName();
@@ -59,14 +59,14 @@ public class RenderVertice {
             p.setColor(Color.RED);
         }
 
-		canvas.drawCircle(center.x - size / 2, center.y - size / 2, size, p);
+        canvas.drawCircle(center.x , center.y , size, p);
 
         //Color and size text
         p.setColor(Color.WHITE);
         p.setTextSize(font_size);
 
         //Text location in the point
-        canvas.drawText(name,center.x-font_size, center.y-font_size/4, p );
+        canvas.drawText(name, center.x-font_size/2, center.y+font_size/4, p );
 
 
 	}
