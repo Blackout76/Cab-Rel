@@ -20,15 +20,15 @@ portWebSocketDevice = 2589
 # -------------------------------------
 if __name__ == '__main__':
 	mapManager = MapManager("NomMap")
-	mapManager.LoadFileMap()
-	print mapManager.toDictFormat()
+	#mapManager.LoadFileMap()
+	#print mapManager.toDictFormat()
 	
-	#thread_server_http = ServerHTTP("1")
-	#thread_server_http.start()
-	#thread_server_client = NetworkServerSocketClient("2",portWebSocketClient)
-	#thread_server_client.start()
-	#thread_server_device = NetworkServerSocketDevice("3",portWebSocketDevice)
-	#thread_server_device.start()
+	thread_server_http = ServerHTTP("1")
+	thread_server_http.start()
+	thread_server_client = NetworkServerSocketClient("2",portWebSocketClient)
+	thread_server_client.start()
+	thread_server_device = NetworkServerSocketDevice("3",portWebSocketDevice)
+	thread_server_device.start()
 
 
 	
