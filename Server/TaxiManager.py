@@ -10,13 +10,13 @@ class TaxiManager:
 		self.cabRequestDict = {}
 		self.mapManagerTaxi = mapManagerTaxi
 
-	def LoadFileTaxi(self):
+	def loadFileTaxi(self):
 		jsonTaxi = open('map.json')
 		data = json.load(jsonTaxi)
 		self.LoadJsonTaxi(data)
 		jsonTaxi.close()
 
-	def LoadJsonTaxi(self, data):
+	def loadJsonTaxi(self, data):
 		taxiData = data["cabInfo"]
 		for taxi in taxiData["cabs"]:
 			addTaxi(taxi)

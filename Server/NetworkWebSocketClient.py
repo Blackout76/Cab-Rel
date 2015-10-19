@@ -25,7 +25,7 @@ class ClientWebSocket(WebSocket):
 	def handleConnected(self):
 		clients.append(self)
 		print self.address, 'connected'
-		self.sendMessage(u'Helo') 
+		self.sendMessage(u'Helo')
 
 	def handleClose(self):
 		clients.remove(self)
