@@ -17,14 +17,14 @@ class NetworkServerSocketDevice(Thread):
 
 class DeviceWebSocket(WebSocket):
 
-    def handleMessage(self):
-        # echo message back to client
-        self.sendMessage(self.data)
+	def handleMessage(self):
+		# echo message back to client
+		self.sendMessage(self.data)
 
-    def handleConnected(self):
+	def handleConnected(self):
 		devices.append(self)
-        print self.address, 'connected'
+		print self.address, 'connected'
 
-    def handleClose(self):
+	def handleClose(self):
 		devices.remove(self)
-        print self.address, 'closed'
+		print self.address, 'closed'
