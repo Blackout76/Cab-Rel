@@ -2,10 +2,21 @@
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from server import *
 from threading import Thread
+import NetworkWebSocketClient
+import NetworkWebSocketDevice
 import threading
 import json
 import urlparse
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+# ip = "172.30.1.104" # prod IP
+# ipLocal = "169.254.83.93" # prod IP
+ip = "0.0.0.0" # dev IP
+ipLocal = "0.0.0.0" # dev IP
+portHTTP = 8080
+server_http = None
 
 # -------------------------------------
 #              HTTP SERVER              
@@ -17,9 +28,9 @@ class GetHandler(BaseHTTPRequestHandler):
 		jsonHash = {}
 
 		if path == "deviceConnect":
-			jsonHash['addr'] = 'ws://' + ip + ':' + `portWebSocketDevice`
+			jsonHash['addr'] = 'ws://' + ipLocal + ':' + `NetworkWebSocketDevice.portWebSocketDevice`
 		elif path == "clientConnect":
-			jsonHash['addr'] = 'ws://' + ip + ':' + `portWebSocketClient`
+			jsonHash['addr'] = 'ws://' + ip + ':' + `NetworkWebSocketClient.portWebSocketClient`
 
 		self.send_response(200)
 		self.end_headers()
