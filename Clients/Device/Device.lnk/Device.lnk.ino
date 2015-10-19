@@ -1,24 +1,41 @@
 #include "Arduino.h"
 #include <Ethernet.h>
 #include <SPI.h>
+#include <LiquidCrystal.h>
 #include <WebSocketClient.h>
-
-// adress mac of the shield
-byte mac[] =  { 0x98, 0x4F, 0xEE, 0x05, 0x35, 0x20 };
-// the arduino's Ip Adresse
-IPAddress ip(192, 168, 1, 225);
-
-char* idCab = "32";
-
-//define IpAdress and port of Http Server
-EthernetClient clientHttp;
-IPAddress httpAdress(192, 168, 1, 50);
-int httpPort = 800;
-String adrServ;
-String prtServ;
+#include <ArduinoJson.h>
 
 //EthernetClient clientHttp;
 WebSocketClient wsClient;
+
+//Init of LCd and KeyPad
+// select the pins used on the LCD panel
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+
+// adress mac of the shield
+byte mac[] =  { 0x98, 0x4F, 0xEE, 0x05, 0x35, 0x20 };
+
+//IPAddress ip(169,254,83,94);
+// the arduino's Ip Adresse
+IPAddress ip(192, 168, 1, 225);
+// the dns server ip
+IPAddress dnServer(192, 168, 1, 1);
+// the router's gateway address:
+IPAddress gateway(192, 168, 1, 1);
+// the subnet:
+IPAddress subnet(255, 255, 255, 0);
+
+//define IpAdress and port of Http Server
+
+EthernetClient clientHttp;
+IPAddress httpAdress(192, 168, 1, 50);
+int httpPort = 800;
+/*IPAddress httpAdress(169,254,83,93);
+int httpPort = 8080;*/
+
+String adrServ;
+String prtServ;
+char* idCab = "32";
 
 // define some values used by the panel and buttons
 int lcd_key = 0;
@@ -30,161 +47,11 @@ int adc_key_in = 0;
 #define btnSELECT 4
 #define btnNONE 5
 
-
-void setup()
-{
-  Serial.begin(9600);
-  //Configure 
-  Ethernet.begin(mac, ip);
-
-  //print out the IP address
-  Serial.print("IP = ");
-  Serial.println(Ethernet.localIP());
-}
+// Cab's State
+bool stateFreeCab = true;
 
 
-void loop()
-{
-  //Check if connect to server Http
-  if (clientHttp.connected())
-  {
-     delay(1000);
-     Serial.print("connecté");
-  }
-  else
-  {
-    delay(1000);
-     Serial.print("Non connecté");
-  }
-  //Manage the button
-  lcd_key = read_LCD_buttons(); // read the buttons
-  switch (lcd_key) // depending on which button was pushed, we perform an action
-  {
-    case btnRIGHT:
-      {
-        break;
-      }
-    case btnLEFT:
-      {
-        break;
-      }
-    case btnUP:
-      {
-        break;
-      }
-    case btnDOWN:
-      {
-        break;
-      }
-    case btnSELECT:
-      {
-        Serial.print("Clique select");
-        delay(1000);
-        //Connect to Http server and get the Ip and port for Web server
-         connectServerHttp(httpAdress, httpPort);
-         closeConnectionHttp();
-        break;
-      }
-    case btnNONE:
-      {
-        break;
-      }
-  }
-}
 
-//Function  Connect to Http server and get Ip and port of WebServer
-void connectServerHttp(IPAddress ipServer, int portServer)
-{
-
-  String getHttp = "";
-  adrServ = "";
-  prtServ = "";
-  char tmp;
-  bool adr = false;
-
-  int erreur = clientHttp.connect(httpAdress, httpPort);
-  if (clientHttp.connected())
-  {
-    clientHttp.println("GET /deviceConnect HTTP/1.0");
-    clientHttp.println();
-    int cpt = 1;
-    int i = 0;
-    bool cond = false;
-    while (clientHttp.available())
-    {
-      char c = clientHttp.read();
-      Serial.print(c);
-      if (adr)
-      {
-        if (c == ':')
-        {
-          cond = true;
-        }
-        else
-        {
-          if (cond == true) prtServ += c;
-
-          else  adrServ += c;
-        }
-      }
-      if (c == '/' and tmp == '/') adr = true;
-      tmp = c;
-
-    }
-
-    Serial.println("adr :" + adrServ);
-    Serial.print("prt: " + prtServ);
-      
-    //adding the chain end character
-    adrServ.concat("\0");
-
-    openConnectionWeb(adrServ,prtServ.toInt() );
-  }
-  else
-  {
-    Serial.println("connection failed");
-  }
-}
- 
-// Function for Close Http Client
-void closeConnectionHttp()
-{
-   //disconnect to Http
-    clientHttp.stop();
-    Serial.print("Connection to Http server is close");
-}
-
-//Function for open Web Client
-void openConnectionWeb(String ipWebServer, int portWebServer)
-{
-   //Open the WebSocket Client
-    if(wsClient.connected()) Serial.print("webS connect");
-    else Serial.print("webS  non connect");
-    wsClient.connect(strToChar(ipWebServer),portWebServer);
-    wsClient.onOpen(onOpen);
-    wsClient.onMessage(onMessage); 
-}
-
-// Function for Close Web client
-void closeConnectionWeb()
-{
-  
-}
-
-void onOpen(WebSocketClient client) 
-{
-  Serial.println("Connected to server");
-}
-
-void onMessage(WebSocketClient client, char* message) 
-{
-  Serial.print("Received: "); Serial.println(message);   
-}
-
-void onError(WebSocketClient client, char* message) {
-  Serial.println("onError()");
-  Serial.print("ERROR: "); Serial.println(message);
-}
 
 // read the buttons
 int read_LCD_buttons()
@@ -202,10 +69,194 @@ int read_LCD_buttons()
   return btnNONE; // when all others fail, return this...
 }
 
-char* strToChar(String s) 
+void setup()
+{
+  lcd.begin(16, 2); // start the library
+
+  Serial.begin(9600);
+  Ethernet.begin(mac, ip);
+  //Ethernet.begin(mac, ip, dnServer, gateway,subnet);
+
+
+  //print out the IP address
+  Serial.print("IP = ");
+  Serial.println(Ethernet.localIP());
+
+ // connectServer(httpAdress,httpPort );
+}
+
+void loop ()
+{
+  wsClient.monitor();
+  if (wsClient.connected())
+  {
+    //display the cab's state
+    lcd.setCursor(0, 0); // move to the begining of the first line
+    if (stateFreeCab)
+    {
+      lcd.print("FREE");
+    /*  char* str1 = "{\"cmd\": \"cabInfo\", \"idCab\":";
+      char* str2 = "}";
+      char * str3 = (char *) malloc(1 + strlen(str1) + strlen(idCab) + strlen(str2) );
+      strcpy(str3, str1);
+      strcat(str3, idCab);
+      strcat(str3, str2);*/
+      wsClient.send("{\"cmd\": \"info\"}");
+      wsClient.onMessage(onMessage);
+    }
+    else
+    {
+      lcd.print("BUSY");
+    }
+
+    wsClient.onError(onError);
+    // wsClient.send("{\"cmd\": \"info\"}");
+
+    // displayCabInfo("toto");
+  }
+
+  //Manage the button
+  lcd_key = read_LCD_buttons(); // read the buttons
+  switch (lcd_key) // depending on which button was pushed, we perform an action
+  {
+    case btnRIGHT:
+      {
+        //
+        wsClient.send("");
+        break;
+      }
+    case btnLEFT:
+      {
+        wsClient.send("");
+        break;
+      }
+    case btnUP:
+      {
+        closeWebSocketClient();
+        if (wsClient.connected()) Serial.println("connected again");
+        else  Serial.println(" disconnect");
+        break;
+        break;
+      }
+    case btnDOWN:
+      {
+        break;
+      }
+    case btnSELECT:
+      {
+        connectServer(httpAdress, httpPort );
+        break;
+      }
+    case btnNONE:
+      {
+       
+      }
+  }
+}
+
+void connectServer(IPAddress Adress , int HttpPort )
+{
+
+  String getHttp = "";
+  adrServ = "";
+  prtServ = "";
+  char tmp;
+  bool adr = false;
+
+  int erreur = clientHttp.connect(httpAdress, httpPort);
+  if (clientHttp.connected())
+  {
+    Serial.print("connect http");
+    clientHttp.println("GET /deviceConnect HTTP/1.0");
+    clientHttp.println();
+    int cpt = 1;
+    int i = 0;
+    bool cond = false;
+    while (clientHttp.available())
+    {
+      char c = clientHttp.read();
+      if (adr)
+      {
+        if (c == ':')
+        {
+          cond = true;
+        }
+        else
+        {
+          if (cond == true) prtServ += c;
+          else  adrServ += c;
+        }
+      }
+      if (c == '/' and tmp == '/') adr = true;
+      tmp = c;
+
+    }
+
+    //disconnect to Http
+    closeConnectionHttp();
+
+    Serial.println("adr :" + adrServ);
+    Serial.print("prt: " + prtServ);
+
+    //adding the chain end character
+    adrServ.concat("\0");
+
+    connectWebSocketClient(adrServ, prtServ.toInt());
+
+  }
+  else
+  {
+    Serial.println("connection failed");
+  }
+}
+
+void closeConnectionHttp()
+{
+  clientHttp.stop();
+}
+
+void closeWebSocketClient( )
+{
+  wsClient.disconnect();
+}
+
+void connectWebSocketClient(String addressServ, int portServ)
+{
+  Serial.println("connect websocket");
+  //Open the WebSocket Client
+  wsClient.connect(strToChar(addressServ), portServ);
+
+  wsClient.onOpen(onOpen);
+
+  if (wsClient.connected()) Serial.print("connecter");
+  else  Serial.print("non connecter");
+}
+
+void onOpen(WebSocketClient client)
+{
+  lcd.clear();
+  Serial.println("Connected to server");
+}
+
+void onMessage(WebSocketClient client, char* message)
+{
+  Serial.print("Received: "); Serial.println(message);
+  
+  delay(5000);
+
+}
+
+void onError(WebSocketClient client, char* message) {
+  Serial.println("onError()");
+  Serial.print("ERROR: "); Serial.println(message);
+}
+
+char* strToChar(String s)
 {
   unsigned int bufSize = s.length() + 1; //String length + null terminator
   char* ret = new char[bufSize];
   s.toCharArray(ret, bufSize);
   return ret;
 }
+
+
