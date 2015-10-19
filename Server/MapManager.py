@@ -2,7 +2,7 @@ import json
 from pprint import pprint
 from Area import *
 
-
+mapManager = None
 
 ##	Manage the map
 #

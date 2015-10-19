@@ -2,8 +2,6 @@ from MapManager import *
 from server import *
 from TestMapManager import *
 
-
-
 class Location:
 	def __init__(self, locationData, mapManagerTaxi):
 		self.areaLocation = mapManagerTaxi.areasDict[locationData[]]

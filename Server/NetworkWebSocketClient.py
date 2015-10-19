@@ -1,5 +1,6 @@
 import json
 from threading import Thread
+from MapManager import *
 from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer
 import urlparse
 import sys
@@ -17,14 +18,15 @@ class NetworkServerSocketClient(Thread):
 
 class ClientWebSocket(WebSocket):
 
-    def handleMessage(self):
-        # echo message back to client
-        self.sendMessage(self.data)
+	def handleMessage(self):
+		# echo message back to client
+		self.sendMessage(self.data)
 
-    def handleConnected(self):
+	def handleConnected(self):
 		clients.append(self)
-        print self.address, 'connected'
+		print self.address, 'connected'
+		self.sendMessage(u'Helo') 
 
-    def handleClose(self):
+	def handleClose(self):
 		clients.remove(self)
-        print self.address, 'closed'
+		print self.address, 'closed'
