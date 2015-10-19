@@ -50,6 +50,6 @@ class MapManager:
 		#for all areas in self.areasDict
 		for areasToJson in self.areasDict:
 			#format the areas to json
-			areas.append(self.areasDict[areasToJson].toDictFormat())
+			areasList.append(self.areasDict[areasToJson].toDictFormat())
 		areas["areas"] = areasList
 		return areas
