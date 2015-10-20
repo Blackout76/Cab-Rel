@@ -17,7 +17,7 @@ public class TaxiManager {
 	public void createRequestAtPoint(Point startPoint){
         TaxiRequest taxiRequest = new TaxiRequest(computeBestInterceptStreet(startPoint));
        	Logger.log(Logger_type.SUCCESS, "[tAXI]", "new taxi request created !");
-       	System.out.println(taxiRequest.toJSON());
+       	//System.out.println(taxiRequest.toJSON());
        	Main.networkManager.sendTaxiRequest(taxiRequest.toJSON());
 	}
 
@@ -57,6 +57,8 @@ public class TaxiManager {
 				}
 	    }
         streetInfos.put("streetName", street.getName());
+        if(((HashMap<String, Double>)streetInfos.get("pointIntercept")).get("distanceToPoint") != null)
+        	streetInfos.put("pourcentHeight", 0);
 		return streetInfos;
 	}
 }
