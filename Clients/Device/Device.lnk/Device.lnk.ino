@@ -47,8 +47,6 @@ int stringStart, stringStop = 0;
 int scrollCursor = screenWidth;
 
 
-
-
 // define some values used by the panel and buttons
 int lcd_key = 0;
 int adc_key_in = 0;
@@ -61,7 +59,7 @@ int adc_key_in = 0;
 
 // Cab's State
 bool stateFreeCab = true;
-
+bool doConnect = false;
 
 // function definitions
 void parseJson(char *jsonString) ;
@@ -100,6 +98,7 @@ void setup()
 
 void loop ()
 {
+  if(doConnect)
   wsClient.monitor();
 
   if (wsClient.connected())
@@ -110,7 +109,7 @@ void loop ()
       wsClient.send("{\"cmd\": \"cabInfo\"}");
       wsClient.onMessage(onMessage);
  
-      displayInfo("FREE","area :"+areaNow + ", street : " + streetNow);
+      displayInfo("FREE  d:0,0km","area :"+areaNow + ", street : " + streetNow);
     }
     else
     {
@@ -146,6 +145,7 @@ void loop ()
       }
     case btnUP:
       {
+        doConnect = false;
         closeWebSocketClient();
         if (wsClient.connected()) Serial.println("connected again");
         else  Serial.println(" disconnect");
@@ -157,6 +157,7 @@ void loop ()
       }
     case btnSELECT:
       {
+        doConnect = true;
         connectServer(httpAdress, httpPort );
         delay(1500);
         break;
@@ -183,7 +184,7 @@ void displayInfo(String l1,String l2)
   } else if (stringStart == stringStop){
     stringStart = stringStop = 0;
     scrollCursor = screenWidth;
-  } else if (stringStop == line1.length() && scrollCursor == 0) {
+  } else if (stringStop == l2.length() && scrollCursor == 0) {
     stringStart++;
   } else {
     stringStart++;
