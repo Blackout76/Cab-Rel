@@ -1,7 +1,10 @@
 package com.example.blackout.gne.render;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Picture;
 import android.graphics.Point;
@@ -16,6 +19,8 @@ import com.example.blackout.gne.General.CPoint;
 import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.R;
 
+import org.eclipse.jetty.util.resource.Resource;
+
 import java.util.Observable;
 
 
@@ -24,6 +29,7 @@ public class RenderTaxi {
 	private ImageView img;
 	private Point position;
 
+
 	public RenderTaxi (){
         position = new Point((int)(RenderView.width/2),(int)(RenderView.height/2));
 
@@ -31,24 +37,10 @@ public class RenderTaxi {
 	
 	public void render(Canvas canvas){
 
+        Paint p=new Paint();
+        p.setColor(Color.YELLOW);
+        canvas.drawCircle(50, 50, 50, p);
 
-           /* img.setScaleX(position.x-img.getWidth()/2);
-            img.setScaleY(position.y - img.getHeight() / 2);*/
-        //img.setImageResource(R.mipmap.taxi);
-       // img.setX(position.x - img.getWidth() / 2);
-       // img.setY(position.y - img.getHeight() / 2);
-
-        //img.draw(canvas);
-
-
-		//canvas.drawImage(img, position.x-img.getWidth(null)/2, position.y-img.getHeight(null)/2, null);
-		//Bitmap b = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
-		//canvas= new Canvas(b);
-       // ImageView iv = (ImageView)findViewById(R.id.my_imageView);
-        /*AbsoluteLayout.LayoutParams absParams = (AbsoluteLayout.LayoutParams)img.getLayoutParams();
-        absParams.x = position.x-img.getWidth()/2;
-        absParams.y = position.y-img.getHeight()/2;
-        img.setLayoutParams(absParams);*/
 	}
 
 
