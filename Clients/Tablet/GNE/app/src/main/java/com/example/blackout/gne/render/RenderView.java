@@ -16,6 +16,7 @@ public class RenderView extends View  {
     public static float height, width;
     String name;
     public static int offSetBorder=30;
+    private String nameOfActiveArea;
 
     public RenderView(Context baseContext) {
 
@@ -32,13 +33,18 @@ public class RenderView extends View  {
     public void onDraw(Canvas canvas) {
 
         Paint paint = new Paint();
-
         renderMap.render((int)this.width,(int)this.height, canvas);
 
     }
+
     public void loadRender(String areaName)
     {
+        this.nameOfActiveArea = areaName;
         renderMap.loadRender((int) this.width, (int) this.height, areaName);
+        invalidate();
+    }
 
+    public String getNameOfActiveArea() {
+        return nameOfActiveArea;
     }
 }

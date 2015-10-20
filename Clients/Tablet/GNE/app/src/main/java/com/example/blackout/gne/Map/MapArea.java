@@ -131,5 +131,8 @@ public class MapArea {
 		map.put("impactPoint", impactPoint);
 		return null;
 	}
-	
+
+	public MapStreet getStreetByName(String streetName) {
+		return this.streets.get(streetName);
+	}
 }

@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +31,7 @@ public class HTTP extends AsyncTask<String, Integer, String> {
         URL url = null;
         HttpURLConnection conn = null;
         try {
-            url = new URL(urlString[0]);//"http://172.30.0.184:80/clientConnect"
+            url = new URL(urlString[0]);//"http://172.30.0.184:8080/clientConnect" //urlString[0]
             conn =(HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
@@ -56,6 +59,7 @@ public class HTTP extends AsyncTask<String, Integer, String> {
                 response.append(line);
             }
             Log.e("HTTP", "response:" + response.toString());
+
             return response.toString();
         } catch (IOException e) {
             Log.e("HTTP", e.getMessage());

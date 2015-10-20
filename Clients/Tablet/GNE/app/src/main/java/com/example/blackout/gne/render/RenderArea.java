@@ -32,7 +32,7 @@ public class RenderArea  {
         //Log.e("iheight", ""+iHeight);
 	    renderStreets(scale_x, scale_y, mapArea.getStreets());
 	    renderVertices(scale_x, scale_y, mapArea);
-        renderTaxis(scale_x, scale_y, mapArea);
+       // renderTaxis(scale_x, scale_y, mapArea);
 
 
 	}
@@ -57,24 +57,29 @@ public class RenderArea  {
 	    }
 	}
 
-    private void renderTaxis(int scale_x, int scale_y, MapArea mapArea)
+   /* private void renderTaxis(int scale_x, int scale_y, MapArea mapArea)
     {
+        this.renderTaxi=new RenderTaxi();
 
 
-    }
+    }*/
 
 	public void render(int iWidth, int iHeight, Canvas canvas) {
+        if(this.renderStreets != null)
+            //print streets
+            for(RenderStreet rs: this.renderStreets)
+            {
+                rs.render(canvas);
+            }
+        if(this.renderVertices != null)
+            //print vertices
+            for(RenderVertice rv: this.renderVertices)
+            {
+                rv.render(iWidth, iHeight, canvas);
+            }
 
-        //print streets
-        for(RenderStreet rs: this.renderStreets)
-        {
-            rs.render(canvas);
-        }
-        //print vertices
-		for(RenderVertice rv: this.renderVertices)
-		{
-			rv.render(iWidth, iHeight, canvas);
-		}
+       /* RenderTaxi rt=this.renderTaxi;
+        rt.render(canvas);*/
 
 	}
 }

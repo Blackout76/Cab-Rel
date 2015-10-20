@@ -2,6 +2,8 @@ package com.example.blackout.gne.Network;
 
 import android.util.Log;
 
+import com.example.blackout.gne.Taxi.TaxiRequest;
+
 import org.java_websocket.WebSocketListener;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
@@ -21,6 +23,7 @@ public class WebSocket {
     public AsyncWebSocket delegate=null;
 
     public WebSocket(String url) {
+        Log.e("URL",""+url);
         try {
             uri = new URI(url);
         } catch (URISyntaxException e) {
@@ -30,6 +33,7 @@ public class WebSocket {
     }
 
     private void connect() {
+
         websocket = new WebSocketClient(uri, new Draft_17()) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
@@ -64,4 +68,9 @@ public class WebSocket {
         websocket.send(message);
     }
 
+
+    public void sendTaxiRequest(TaxiRequest taxiRequest) {
+        JSONObject taxi =taxiRequest.toJSON();
+        this.websocket.send(taxi.toString());
+    }
 }
