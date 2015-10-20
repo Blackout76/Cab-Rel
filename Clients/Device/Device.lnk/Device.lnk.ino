@@ -15,7 +15,7 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 // adress mac of the shield
 byte mac[] =  { 0x98, 0x4F, 0xEE, 0x05, 0x35, 0x20 };
 
-IPAddress ip(169,254,83,94);
+IPAddress ip(169, 254, 83, 94);
 // the arduino's Ip Adresse
 //IPAddress ip(192, 168, 1, 225);
 // the dns server ip
@@ -30,15 +30,24 @@ IPAddress subnet(255, 255, 255, 0);*/
 EthernetClient clientHttp;
 /*IPAddress httpAdress(192, 168, 1, 50);
 int httpPort = 800;*/
-IPAddress httpAdress(169,254,83,93);
+IPAddress httpAdress(169, 254, 83, 93);
 int httpPort = 8080;
 
 String adrServ;
-String prtServ;
+int prtServ;
 char* idCab = "32";
-
+int i = 0;
 String areaNow;
 String streetNow;
+
+
+int screenWidth = 16;
+int screenHeight = 2;
+int stringStart, stringStop = 0;
+int scrollCursor = screenWidth;
+
+
+
 
 // define some values used by the panel and buttons
 int lcd_key = 0;
@@ -82,16 +91,11 @@ void setup()
 
   Serial.begin(9600);
   Ethernet.begin(mac, ip);
-  //Ethernet.begin(mac, ip, dnServer, gateway,subnet);
 
   //print out the IP address
   Serial.print("IP = ");
   Serial.println(Ethernet.localIP());
-  connectServer(httpAdress,8080);
 
-  //Open the WebSocket Client
-  wsClient.connect("169.254.83.93", 2589);
-  wsClient.onOpen(onOpen);
 }
 
 void loop ()
@@ -103,25 +107,10 @@ void loop ()
 
     if (stateFreeCab)
     {
-      lcd.setCursor(0, 0); // move to the begining of the first line
-      lcd.print("FREE");
-      /*  char* str1 = "{\"cmd\": \"cabInfo\", \"idCab\":";
-        char* str2 = "}";
-        char * str3 = (char *) malloc(1 + strlen(str1) + strlen(idCab) + strlen(str2) );
-        strcpy(str3, str1);
-        strcat(str3, idCab);
-        strcat(str3, str2);*/
       wsClient.send("{\"cmd\": \"cabInfo\"}");
       wsClient.onMessage(onMessage);
-      lcd.setCursor(0, 1);
-      //lcd.print("Salut");
-      Serial.println(areaNow);
-      lcd.print(areaNow + ", " + streetNow);
-      lcd.scrollDisplayLeft();
-      //display the cab's state
-      lcd.setCursor(0, 0); // move to the begining of the first line
-      lcd.print("FREE");
-      delay(1000);
+ 
+      displayInfo("FREE","area :"+areaNow + ", street : " + streetNow);
     }
     else
     {
@@ -132,9 +121,13 @@ void loop ()
   }
   else
   {
-    Serial.print("deconnecter du serveur du con");
+    lcd.setCursor(0, 0);
+    lcd.print("Press Select to");
+    lcd.setCursor(0, 1);
+    lcd.print("    Connect");
+    delay(500);
   }
-  
+
 
   //Manage the button
   lcd_key = read_LCD_buttons(); // read the buttons
@@ -165,6 +158,7 @@ void loop ()
     case btnSELECT:
       {
         connectServer(httpAdress, httpPort );
+        delay(1500);
         break;
       }
     case btnNONE:
@@ -174,16 +168,38 @@ void loop ()
   }
 }
 
+void displayInfo(String l1,String l2)
+{
+ 
+  lcd.setCursor(0, 0);
+  lcd.print(l1);
+  lcd.setCursor(scrollCursor, 1);
+  lcd.print(l2.substring(stringStart,stringStop));
+  delay(300);
+  lcd.clear();
+  if(stringStart == 0 && scrollCursor > 0){
+    scrollCursor--;
+    stringStop++;
+  } else if (stringStart == stringStop){
+    stringStart = stringStop = 0;
+    scrollCursor = screenWidth;
+  } else if (stringStop == line1.length() && scrollCursor == 0) {
+    stringStart++;
+  } else {
+    stringStart++;
+    stringStop++;
+  }
+}
+
 void connectServer(IPAddress Adress , int HttpPort )
 {
 
   String getHttp = "";
   adrServ = "";
-  prtServ = "";
   char tmp;
   bool adr = false;
   Serial.println(HttpPort);
-   int erreur = clientHttp.connect(httpAdress, httpPort);
+  int erreur = clientHttp.connect(httpAdress, httpPort);
   if (clientHttp.connected())
   {
     Serial.print("connect http");
@@ -195,6 +211,10 @@ void connectServer(IPAddress Adress , int HttpPort )
     while (clientHttp.available())
     {
       char c = clientHttp.read();
+      getHttp += c;
+
+      /*
+          char c = clientHttp.read();
       Serial.print(c);
       if (adr)
       {
@@ -211,19 +231,41 @@ void connectServer(IPAddress Adress , int HttpPort )
       if (c == '/' and tmp == '/') adr = true;
       tmp = c;
 
+       */
     }
 
     //disconnect to Http
-    
     closeConnectionHttp();
-    Serial.println("adr :" + adrServ);
-    Serial.print("prt: " + prtServ);
+
+    Serial.println("gethttp" + getHttp);
+    int cc = getHttp.lastIndexOf("{");
+    aJsonObject* root = aJson.parse(strToChar(getHttp.substring(cc)));
+
+    if (root != NULL) {
+      //Serial.println("Parsed successfully 1 " );
+      aJsonObject* prt = aJson.getObjectItem(root, "prt");
+      aJsonObject* addr = aJson.getObjectItem(root, "addr");
+      if (prt != NULL)
+      {
+        prtServ = prt->valueint;
+
+      }
+      if (addr != NULL)
+      {
+        adrServ = addr->valuestring;
+      }
+    }
+
+
+    Serial.println("                  adr :" + adrServ);
+    Serial.print("                   prt: ");
+    Serial.println(prtServ);
 
     //adding the chain end character
     adrServ.concat("\0");
 
-   // connectWebSocketClient(adrServ, prtServ.toInt());
-
+    //connectWebSocketClient(adrServ, prtServ);
+    connectWebSocketClient(adrServ, prtServ);
   }
   else
   {
@@ -247,8 +289,9 @@ void connectWebSocketClient(String addressServ, int portServ)
 {
   Serial.println("tentative de connect websocket");
   //Open the WebSocket Client
+  Serial.println(addressServ);
+  Serial.println(portServ);
   wsClient.connect(strToChar(addressServ), portServ);
-  wsClient.connect(strToChar(addressServ), 2589);
   wsClient.onOpen(onOpen);
 
   if (wsClient.connected()) Serial.print("connecter");
@@ -264,7 +307,7 @@ void onOpen(WebSocketClient client)
 void onClose(WebSocketClient client)
 {
   lcd.clear();
-  Serial.println("Connected to server");
+  Serial.println("Disconnected to server");
 }
 
 void onMessage(WebSocketClient client, char* message)
@@ -286,24 +329,25 @@ void parseJson(char *jsonString)
     if (cabInfo != NULL)
     {
       //Serial.println("Parsed successfully 3 " );
-      aJsonObject* locnow = aJson.getObjectItem(cabInfo, "locnow");
+      aJsonObject* loc_now = aJson.getObjectItem(cabInfo, "loc_now");
 
-      if (locnow != NULL)
+      if (loc_now != NULL)
       {
         //Serial.println("Parsed successfully 4 " );
-        aJsonObject* area = aJson.getObjectItem(locnow, "area");
+        aJsonObject* area = aJson.getObjectItem(loc_now, "area");
         //Serial.println("Parsed successfully 4 " );
-        aJsonObject* street = aJson.getObjectItem(locnow, "street");
+        aJsonObject* location = aJson.getObjectItem(loc_now, "location");
 
         if (area != NULL)
         {
           //Serial.println("Parsed successfully 5 " );
+          Serial.println(areaNow);
           areaNow = area->valuestring;
         }
-        if (street != NULL)
+        if (location != NULL)
         {
-          //Serial.println("Parsed successfully 5 " );
-          streetNow = street->valuestring;
+          Serial.println(streetNow);
+          streetNow = location->valuestring;
         }
       }
 
@@ -332,32 +376,32 @@ void parseJson(char *jsonString)
         Serial.println("request est null");
       }
     }
-    
+
     //Serial.println("Parsed successfully 2 " );
     aJsonObject* cabQueue = aJson.getObjectItem(root, "cabQueue");
- if (cabQueue != NULL)
+    if (cabQueue != NULL)
     {
       //Serial.println("Parsed successfully 3 " );
       aJsonObject* area = aJson.getObjectItem(cabQueue, "area");
 
-       //Serial.println("Parsed successfully 3 " );
+      //Serial.println("Parsed successfully 3 " );
       aJsonObject* location = aJson.getObjectItem(cabQueue, "location");
 
-      if(location!= NULL)
+      if (location != NULL)
       {
-         //Serial.println("Parsed successfully 3 " );
-          aJsonObject* locationType = aJson.getObjectItem(location, "locationType");
-          if(locationType != NULL)
-          {
-        /*    if(locationType->valuestring.equals("street"))
-            {
-              
-            }
-            else
-            {
-              
-            }*/
-          }
+        //Serial.println("Parsed successfully 3 " );
+        aJsonObject* locationType = aJson.getObjectItem(location, "locationType");
+        if (locationType != NULL)
+        {
+          /*    if(locationType->valuestring.equals("street"))
+              {
+
+              }
+              else
+              {
+
+              }*/
+        }
       }
     }
 
