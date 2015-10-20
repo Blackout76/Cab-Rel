@@ -6,10 +6,14 @@ import android.graphics.Paint;
 import android.graphics.Picture;
 import android.graphics.Point;
 import android.media.Image;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.blackout.gne.General.CPoint;
+import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.R;
 
 import java.util.Observable;
@@ -27,11 +31,15 @@ public class RenderTaxi {
 	
 	public void render(Canvas canvas){
 
+
            /* img.setScaleX(position.x-img.getWidth()/2);
             img.setScaleY(position.y - img.getHeight() / 2);*/
-        img.setImageResource(R.mipmap.taxi);
-        img.setX(position.x - img.getWidth() / 2);
-        img.setY(position.y - img.getHeight() / 2);
+        //img.setImageResource(R.mipmap.taxi);
+       // img.setX(position.x - img.getWidth() / 2);
+       // img.setY(position.y - img.getHeight() / 2);
+
+        //img.draw(canvas);
+
 
 		//canvas.drawImage(img, position.x-img.getWidth(null)/2, position.y-img.getHeight(null)/2, null);
 		//Bitmap b = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
@@ -42,6 +50,8 @@ public class RenderTaxi {
         absParams.y = position.y-img.getHeight()/2;
         img.setLayoutParams(absParams);*/
 	}
+
+
 
 	//@Override
 	public void update(Observable arg0, Object arg1) {

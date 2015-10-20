@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.blackout.gne.MainActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,7 +18,6 @@ import java.net.URL;
 
 
 public class HTTP extends AsyncTask<String, Integer, String> {
-    public AsyncResponse delegate=null;
 
     @Override
     protected void onProgressUpdate(Integer... values){
@@ -46,8 +47,19 @@ public class HTTP extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        delegate.httpResponse(result);
+
+        JSONObject msgJSON = null;
+        try {msgJSON = new JSONObject(result);} catch (JSONException e) { }
+        if (msgJSON != null) {
+            try {
+                MainActivity.webSocket = new WebSocket(msgJSON.get("addr").toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        //delegate.httpResponse(result);
     }
+
 
     private String readStream(InputStream in) {
         BufferedReader reader = null;

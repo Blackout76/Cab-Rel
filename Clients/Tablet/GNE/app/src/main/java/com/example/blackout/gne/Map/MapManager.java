@@ -3,19 +3,16 @@ package com.example.blackout.gne.Map;
 import android.util.Log;
 
 import com.example.blackout.gne.MainActivity;
-import com.example.blackout.gne.Network.AsyncWebSocket;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Observable;
-import java.util.Observer;
 
 
-public class MapManager extends Observable implements AsyncWebSocket {
+public class MapManager extends Observable {
 	private HashMap<Object, MapArea> areas;
 
 	@SuppressWarnings("unchecked")
@@ -30,6 +27,7 @@ public class MapManager extends Observable implements AsyncWebSocket {
 			e.printStackTrace();
 		}
 		Log.i("MAP", "map generated !");
+		MainActivity.ihm.loadRender("Quartier Sud");
 	}
 
 
@@ -37,7 +35,7 @@ public class MapManager extends Observable implements AsyncWebSocket {
 		return this.areas.get(name);
 	}
 
-
+/*
 	@Override
 	public void onWebSocketMessage(JSONObject json) {
 		try {
@@ -46,9 +44,10 @@ public class MapManager extends Observable implements AsyncWebSocket {
 				JSONObject msgJSON = null;
 				//MainActivity.ihm.loadRender("Quartier Nord");
 				MainActivity.ihm.loadRender("Quartier Sud");
+				MainActivity.ihm.invalidate();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

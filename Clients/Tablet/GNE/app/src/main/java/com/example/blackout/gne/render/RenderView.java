@@ -7,8 +7,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Layout;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.util.AttributeSet;
 
+import com.example.blackout.gne.General.CPoint;
+import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.Map.MapArea;
 
 public class RenderView extends View  {
@@ -18,9 +22,9 @@ public class RenderView extends View  {
     public static int offSetBorder=30;
     private String nameOfActiveArea;
 
-    public RenderView(Context baseContext) {
+    public RenderView(Context context, AttributeSet attrs) {
 
-        super(baseContext);
+        super(context, attrs);
         renderMap=new RenderMap();
         this.height=getContext().getResources().getDisplayMetrics().heightPixels;
         this.width=getContext().getResources().getDisplayMetrics().widthPixels;
@@ -31,20 +35,38 @@ public class RenderView extends View  {
 
 
     public void onDraw(Canvas canvas) {
-
-        Paint paint = new Paint();
-        renderMap.render((int)this.width,(int)this.height, canvas);
+        renderMap.render((int) this.width, (int) this.height, canvas);
 
     }
 
-    public void loadRender(String areaName)
-    {
+    public void loadRender(String areaName) {
         this.nameOfActiveArea = areaName;
         renderMap.loadRender((int) this.width, (int) this.height, areaName);
-        invalidate();
+        MainActivity.ihm.postInvalidate();
+
     }
 
     public String getNameOfActiveArea() {
         return nameOfActiveArea;
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        int action = event.getAction();
+        float x=0;
+        float y=0;
+        MainActivity.ihm.invalidate();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                x = event.getX();
+                y = event.getY();
+                Log.e("x", "" + x);
+                Log.e("y", "" + y);
+                if(MainActivity.ihm.getNameOfActiveArea() != null && MainActivity.mapManager.getAreaByName(MainActivity.ihm.getNameOfActiveArea()) != null)
+                    MainActivity.taxiManager.createRequestAtPoint(new CPoint(x,y));
+        }
+
+        return true;
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.blackout.gne.Network;
 
 import android.util.Log;
 
+import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.Taxi.TaxiRequest;
 
 import org.java_websocket.WebSocketListener;
@@ -14,13 +15,9 @@ import org.json.JSONObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * Created by blackout on 15/10/2015.
- */
 public class WebSocket {
     private URI uri;
     private WebSocketClient websocket;
-    public AsyncWebSocket delegate=null;
 
     public WebSocket(String url) {
         Log.e("URL",""+url);
@@ -44,7 +41,13 @@ public class WebSocket {
             public void onMessage(String msg) {
                 JSONObject msgJSON = null;
                 try {msgJSON = new JSONObject(msg);} catch (JSONException e) { }
-                delegate.onWebSocketMessage(msgJSON);
+                try {
+                    if (msgJSON.getJSONArray("areas") != null)
+                        MainActivity.mapManager.loadMap(msgJSON);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //delegate.onWebSocketMessage(msgJSON);
                 Log.i("WEBSOCKET", "Recepted: " + msgJSON.toString());
             }
 
