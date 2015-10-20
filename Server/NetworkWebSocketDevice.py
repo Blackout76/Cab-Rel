@@ -20,9 +20,11 @@ class NetworkServerSocketDevice(Thread):
 	def run(self):
 		self.server.serveforever()
 
-	def broadcastAll(self,json):
-		for c in clients:
-			c.sendMessage(json.dumps(json,ensure_ascii=False))
+	def broadcastAll(self,jsonMessage):
+		print jsonMessage
+		print"device"
+		for d in devices:
+			d.sendMessage(json.dumps(jsonMessage,ensure_ascii=False))
 
 class DeviceWebSocket(WebSocket):
 

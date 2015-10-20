@@ -20,9 +20,11 @@ class NetworkServerSocketClient(Thread):
 	def run(self):
 		self.server.serveforever()
 	
-	def broadcastAll(self,json):
+	def broadcastAll(self,jsonMessage):
+		print jsonMessage
+		print "client"
 		for c in clients:
-			c.sendMessage(json.dumps(json,ensure_ascii=False))
+			c.sendMessage(json.dumps(jsonMessage,ensure_ascii=False))
 
 class ClientWebSocket(WebSocket):
 

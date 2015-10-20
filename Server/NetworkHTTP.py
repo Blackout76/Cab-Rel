@@ -11,8 +11,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-# ip = "172.30.1.104" # prod IP
-# ipLocal = "169.254.83.93" # prod IP
+#ip = "172.30.1.104" # prod IP
+#ipLocal = "169.254.83.93" # prod IP
 ip = "0.0.0.0" # dev IP
 ipLocal = "0.0.0.0" # dev IP
 portHTTP = 8080
@@ -28,9 +28,10 @@ class GetHandler(BaseHTTPRequestHandler):
 		jsonHash = {}
 
 		if path == "deviceConnect":
-			jsonHash['addr'] = 'ws://' + ipLocal + ':' + `NetworkWebSocketDevice.portWebSocketDevice`
+			jsonHash["addr"] = ipLocal
+			jsonHash["prt"] = NetworkWebSocketDevice.portWebSocketDevice
 		elif path == "clientConnect":
-			jsonHash['addr'] = 'ws://' + ip + ':' + `NetworkWebSocketClient.portWebSocketClient`
+			jsonHash["addr"] = 'ws://' + ip + ':' + `NetworkWebSocketClient.portWebSocketClient`
 
 		self.send_response(200)
 		self.end_headers()
@@ -41,7 +42,7 @@ class ServerHTTP(Thread):
 	def __init__(self, lettre):
 		self.isRun = True
 		Thread.__init__(self)
-		self.server = HTTPServer((ip, portHTTP), GetHandler)
+		self.server = HTTPServer(('ip', portHTTP), GetHandler)
 		print 'HTTP listenning ...'
 
 	def run(self):

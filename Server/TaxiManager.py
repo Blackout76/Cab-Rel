@@ -5,7 +5,7 @@ import NetworkWebSocketDevice
 import NetworkWebSocketClient
 import server
 
-
+taxiManager = None
 ##	Manage all Taxis
 #
 #	More details.
@@ -57,14 +57,15 @@ class TaxiManager:
 		self.cabRequestList.append(newCabRequest)
 
 	##	Return the taxi list to dictionary format
-	def toDictFormatTaxiList():
-		#return juste the first taxi 
+	def toDictFormatTaxiList(self):
+		#return juste the first taxi
 		#because we need to finich with one taxi before
+		taxis = {}
 		taxis["cabInfo"] = self.taxiList[0].toDictFormat()
 		return taxis
 
 	##	Return the CabRequest list to dictionary format
-	def toDictFormatCabRequest():
+	def toDictFormatCabRequest(self):
 		#initialise the liste of cab request not accept
 		cabRequests = []
 		cabQueue = {}
@@ -89,8 +90,9 @@ class TaxiManager:
 			NetworkWebSocketClient.server_client.broadcastAll(cabQueueJson)
 			NetworkWebSocketDevice.server_device.broadcastAll(cabQueueJson)
 
-	def onCabInfo():
-		cabInfoJson = self.toDictFormatCabRequest()
+	def onCabInfo(self):
+		cabInfoJson = self.toDictFormatTaxiList()
+		print cabInfoJson
 		NetworkWebSocketClient.server_client.broadcastAll(cabInfoJson)
 		NetworkWebSocketDevice.server_device.broadcastAll(cabInfoJson)
 
