@@ -53,7 +53,8 @@ public class NetworkWebSocket  {
        executeMessage(json);
     }
     public void executeMessage(JSONObject json){
-    	if(json.get("areas") != null)
+    	//System.err.println(json.get("real"));
+    	if(json != null && json.get("areas") != null)
     		Main.mapManager.loadMap(json);
     }
     
