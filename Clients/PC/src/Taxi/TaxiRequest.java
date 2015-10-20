@@ -29,14 +29,29 @@ public class TaxiRequest {
 	
 	public JSONObject toJSON(){
 		JSONObject json = new JSONObject();
+		JSONObject locationMap = new JSONObject();
+		JSONObject locationIntercept = new JSONObject();
 		JSONObject infos = new JSONObject();
-		infos.put("origin", this.intersectedPoint.toJSON());
+		
+		if(this.pourcentIntersect == 0){
+
+			locationMap.put("locationType", "street");
+			locationMap.put("area", this.area.getName());
+			locationMap.put("location", this.originVertice.getName());
+		}
+		else{
+			locationIntercept.put("from", this.originVertice.getName());
+			locationIntercept.put("to", this.street.getOposedVerticeFromVertice(this.originVertice.getName()));
+			locationIntercept.put("progression", this.pourcentIntersect);
+			locationIntercept.put("name", this.street.getName());
+			
+			locationMap.put("locationType", "street");
+			locationMap.put("area", this.area.getName());
+			locationMap.put("location", locationIntercept);
+		}
 		infos.put("area", this.area.getName());
-		infos.put("street", this.street.getName());
-		infos.put("pourcent", this.pourcentIntersect);
-		infos.put("vertice", this.originVertice.getName());
+		infos.put("location", locationMap);
 		json.put("cabRequest", infos);
 		return json;
-		
 	}
 }
