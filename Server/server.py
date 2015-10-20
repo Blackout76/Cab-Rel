@@ -1,8 +1,7 @@
 ﻿#! /usr/bin/env python
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from threading import Thread
-import NetworkWebSocketClient
-import NetworkWebSocketDevice
+import NetworkWebSocket
 import NetworkHTTP
 import MapManager
 import TaxiManager
@@ -22,12 +21,11 @@ if __name__ == '__main__':
 	TaxiManager.taxiManager = TaxiManager.TaxiManager(MapManager.mapManager)
 	TaxiManager.taxiManager.newTaxi()
 
-	#NetworkHTTP.server_http = NetworkHTTP.ServerHTTP("1")
-	#NetworkHTTP.server_http.start()
-	NetworkWebSocketClient.server_client = NetworkWebSocketClient.NetworkServerSocketClient("2")
-	NetworkWebSocketClient.server_client.start()
-	NetworkWebSocketDevice.server_device = NetworkWebSocketDevice.NetworkServerSocketDevice("3")
-	NetworkWebSocketDevice.server_device.start()
+	NetworkHTTP.server_http = NetworkHTTP.ServerHTTP("1")
+	NetworkHTTP.server_http.start()
+	
+	NetworkWebSocket.server_WEBSOCKET = NetworkWebSocket.NetworkServerSocket("2")
+	NetworkWebSocket.server_WEBSOCKET.start()
 	
 	TaxiManager.taxiManager.onCabInfo()
 	
