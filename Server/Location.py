@@ -46,7 +46,7 @@ class Location:
 			#take the name of the vertex "from"
 			locationSeg["from"] = self.vertexFrom.verticeName
 			#take the name of the vertex "to"
-			locationSeg["to"] = self.vertexTo.verticeTo.verticeName
+			locationSeg["to"] = self.vertexTo.verticeName #self.vertexTo.verticeTo.verticeName Olivier change
 			locationSeg["progression"] = self.progression
 			#take the name of the street
 			locationSeg["name"] = self.street.streetName
