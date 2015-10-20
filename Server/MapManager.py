@@ -1,6 +1,7 @@
 import json
 from pprint import pprint
 from Area import *
+from DijkstraTree import *
 
 mapManager = None
 
@@ -14,6 +15,7 @@ class MapManager:
 		#memeber initialisation
 		self.mapName = name
 		self.areasDict = {}
+		self.dijkstraTree = None
 
 	##	Load a json file to make the map
 	def loadFileMap(self):
@@ -53,3 +55,11 @@ class MapManager:
 			areasList.append(self.areasDict[areasToJson].toDictFormat())
 		areas["areas"] = areasList
 		return areas
+
+	#def findShortestRoad(self, pointA, pointB):
+	def initTree(self):
+		self.dijkstraTree = DijkstraTree(self.areasDict)
+
+
+
+
