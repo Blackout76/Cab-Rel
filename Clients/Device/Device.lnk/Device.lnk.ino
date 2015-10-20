@@ -15,23 +15,23 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 // adress mac of the shield
 byte mac[] =  { 0x98, 0x4F, 0xEE, 0x05, 0x35, 0x20 };
 
-//IPAddress ip(169,254,83,94);
+IPAddress ip(169,254,83,94);
 // the arduino's Ip Adresse
-IPAddress ip(192, 168, 1, 225);
+//IPAddress ip(192, 168, 1, 225);
 // the dns server ip
-IPAddress dnServer(192, 168, 1, 1);
+/*IPAddress dnServer(192, 168, 1, 1);
 // the router's gateway address:
 IPAddress gateway(192, 168, 1, 1);
 // the subnet:
-IPAddress subnet(255, 255, 255, 0);
+IPAddress subnet(255, 255, 255, 0);*/
 
 //define IpAdress and port of Http Server
 
 EthernetClient clientHttp;
-IPAddress httpAdress(192, 168, 1, 50);
-int httpPort = 800;
-/*IPAddress httpAdress(169,254,83,93);
-int httpPort = 8080;*/
+/*IPAddress httpAdress(192, 168, 1, 50);
+int httpPort = 800;*/
+IPAddress httpAdress(169,254,83,93);
+int httpPort = 8080;
 
 String adrServ;
 String prtServ;
@@ -84,17 +84,20 @@ void setup()
   Ethernet.begin(mac, ip);
   //Ethernet.begin(mac, ip, dnServer, gateway,subnet);
 
-
   //print out the IP address
   Serial.print("IP = ");
   Serial.println(Ethernet.localIP());
+  connectServer(httpAdress,8080);
 
-  // connectServer(httpAdress,httpPort );
+  //Open the WebSocket Client
+  wsClient.connect("169.254.83.93", 2589);
+  wsClient.onOpen(onOpen);
 }
 
 void loop ()
 {
   wsClient.monitor();
+
   if (wsClient.connected())
   {
 
@@ -108,7 +111,7 @@ void loop ()
         strcpy(str3, str1);
         strcat(str3, idCab);
         strcat(str3, str2);*/
-      wsClient.send("{\"cmd\": \"info\"}");
+      wsClient.send("{\"cmd\": \"cabInfo\"}");
       wsClient.onMessage(onMessage);
       lcd.setCursor(0, 1);
       //lcd.print("Salut");
@@ -118,7 +121,7 @@ void loop ()
       //display the cab's state
       lcd.setCursor(0, 0); // move to the begining of the first line
       lcd.print("FREE");
-      delay(200);
+      delay(1000);
     }
     else
     {
@@ -127,6 +130,11 @@ void loop ()
 
     wsClient.onError(onError);
   }
+  else
+  {
+    Serial.print("deconnecter du serveur du con");
+  }
+  
 
   //Manage the button
   lcd_key = read_LCD_buttons(); // read the buttons
@@ -134,13 +142,13 @@ void loop ()
   {
     case btnRIGHT:
       {
-        //
-        wsClient.send("");
+
+        wsClient.send("{\"cmd\":\"requestAnswer\",\"idRequest\":\"D32\",\"answer\":\"no\"}");
         break;
       }
     case btnLEFT:
       {
-        wsClient.send("");
+        wsClient.send("{\"cmd\":\"requestAnswer\" ,\"idRequest\": \"D32\",\"answer\":\"yes\"}");
         break;
       }
     case btnUP:
@@ -148,7 +156,6 @@ void loop ()
         closeWebSocketClient();
         if (wsClient.connected()) Serial.println("connected again");
         else  Serial.println(" disconnect");
-        break;
         break;
       }
     case btnDOWN:
@@ -175,8 +182,8 @@ void connectServer(IPAddress Adress , int HttpPort )
   prtServ = "";
   char tmp;
   bool adr = false;
-
-  int erreur = clientHttp.connect(httpAdress, httpPort);
+  Serial.println(HttpPort);
+   int erreur = clientHttp.connect(httpAdress, httpPort);
   if (clientHttp.connected())
   {
     Serial.print("connect http");
@@ -188,6 +195,7 @@ void connectServer(IPAddress Adress , int HttpPort )
     while (clientHttp.available())
     {
       char c = clientHttp.read();
+      Serial.print(c);
       if (adr)
       {
         if (c == ':')
@@ -206,15 +214,15 @@ void connectServer(IPAddress Adress , int HttpPort )
     }
 
     //disconnect to Http
+    
     closeConnectionHttp();
-
     Serial.println("adr :" + adrServ);
     Serial.print("prt: " + prtServ);
 
     //adding the chain end character
     adrServ.concat("\0");
 
-    connectWebSocketClient(adrServ, prtServ.toInt());
+   // connectWebSocketClient(adrServ, prtServ.toInt());
 
   }
   else
@@ -225,20 +233,22 @@ void connectServer(IPAddress Adress , int HttpPort )
 
 void closeConnectionHttp()
 {
+  Serial.println("Deconecter de http");
   clientHttp.stop();
 }
 
 void closeWebSocketClient( )
 {
+  Serial.println("Deconecter de Web");
   wsClient.disconnect();
 }
 
 void connectWebSocketClient(String addressServ, int portServ)
 {
-  Serial.println("connect websocket");
+  Serial.println("tentative de connect websocket");
   //Open the WebSocket Client
   wsClient.connect(strToChar(addressServ), portServ);
-
+  wsClient.connect(strToChar(addressServ), 2589);
   wsClient.onOpen(onOpen);
 
   if (wsClient.connected()) Serial.print("connecter");
@@ -246,6 +256,12 @@ void connectWebSocketClient(String addressServ, int portServ)
 }
 
 void onOpen(WebSocketClient client)
+{
+  lcd.clear();
+  Serial.println("Connected to server");
+}
+
+void onClose(WebSocketClient client)
 {
   lcd.clear();
   Serial.println("Connected to server");
@@ -333,14 +349,14 @@ void parseJson(char *jsonString)
           aJsonObject* locationType = aJson.getObjectItem(location, "locationType");
           if(locationType != NULL)
           {
-            if(locationType->valuestring.equals("street"))
+        /*    if(locationType->valuestring.equals("street"))
             {
               
             }
             else
             {
               
-            }
+            }*/
           }
       }
     }
