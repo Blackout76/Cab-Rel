@@ -33,5 +33,11 @@ public class MapStreet {
 	public boolean isOneway(){
 		return this.oneway;
 	}
+
+	public String getOposedVerticeFromVertice(String verticeName) {
+		if(this.path.get(0).getName().equals(verticeName))
+			return this.getPath().get(this.getPath().size()-1).getName();
+		return this.path.get(0).getName();
+	}
 	
 }
