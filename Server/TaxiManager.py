@@ -1,7 +1,9 @@
 from CabRequest import *
 from MapManager import *
 from Taxi import *
-
+import NetworkWebSocketDevice
+import NetworkWebSocketClient
+import server
 
 
 ##	Manage all Taxis
@@ -58,14 +60,38 @@ class TaxiManager:
 	def toDictFormatTaxiList():
 		#return juste the first taxi 
 		#because we need to finich with one taxi before
-		taxis = self.taxiList[0].toDictFormat()
+		taxis["cabInfo"] = self.taxiList[0].toDictFormat()
 		return taxis
 
 	##	Return the CabRequest list to dictionary format
 	def toDictFormatCabRequest():
 		#initialise the liste of cab request not accept
 		cabRequests = []
+		cabQueue = {}
 		#for each request in the request list add the json of the request
 		for request in self.cabRequestList:
 			cabRequests.append(request.toDictFormat())
-		return cabRequests
+		cabQueue["cabQueue"] = cabRequests
+		return cabQueue
+
+	def onRequestAnswer(self, answer):
+		if answer == "yes":
+			print "mod taxi info and send it"
+			if self.taxiList[0].destination == None:
+				self.taxiList[0].destination = self.cabRequestList[0] 
+				cabInfoJson = self.toDictFormatCabRequest()
+				NetworkWebSocketClient.server_client.broadcastAll(cabInfoJson)
+				NetworkWebSocketDevice.server_device.broadcastAll(cabInfoJson)
+		else:
+			print "del cab request and resend cabrequestslist"
+			self.cabRequestList.pop(0)
+			cabQueueJson = json.dumps(self.toDictFormatCabRequest)
+			NetworkWebSocketClient.server_client.broadcastAll(cabQueueJson)
+			NetworkWebSocketDevice.server_device.broadcastAll(cabQueueJson)
+
+	def onCabInfo():
+		cabInfoJson = self.toDictFormatCabRequest()
+		NetworkWebSocketClient.server_client.broadcastAll(cabInfoJson)
+		NetworkWebSocketDevice.server_device.broadcastAll(cabInfoJson)
+
+

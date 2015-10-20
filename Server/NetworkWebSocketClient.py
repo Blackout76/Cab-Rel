@@ -5,6 +5,7 @@ import json
 from threading import Thread
 from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer
 import MapManager
+import TaxiManager
 
 clients = []
 portWebSocketClient = 2639
@@ -27,9 +28,13 @@ class ClientWebSocket(WebSocket):
 
 	def handleMessage(self):
 		# echo message back to client
-		print json.loads(self.data)
-		# TODO
-		# Recept different type
+		self.sendMessage(self.data)
+		clientMessageHandle = json.loads(self.data)
+		print messageHandle
+		if messageHandle.keys()[0] == "cabRequest":
+			TaxiManager.taxiManager.addCabRequest(messageHandle)
+		else:
+			print "not a cab requets"
 		
 
 	def handleConnected(self):

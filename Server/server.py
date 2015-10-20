@@ -5,6 +5,7 @@ import NetworkWebSocketClient
 import NetworkWebSocketDevice
 import NetworkHTTP
 import MapManager
+import TaxiManager
 import threading
 import json
 import urlparse
@@ -18,6 +19,7 @@ sys.setdefaultencoding('utf-8')
 if __name__ == '__main__':
 	MapManager.mapManager = MapManager.MapManager("NomMap")
 	MapManager.mapManager.loadFileMap()
+	TaxiManager.taxiManager = TaxiManager.TaxiManager(MapManager.mapManager)
 	
 	NetworkHTTP.server_http = NetworkHTTP.ServerHTTP("1")
 	NetworkHTTP.server_http.start()

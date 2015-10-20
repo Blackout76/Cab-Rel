@@ -13,7 +13,7 @@ class Vertice:
 		#initialise vertex x
 		self.verticeX = verticeJson["x"]
 		#initialise vertex y
-		self. verticeY = verticeJson["y"]
+		self.verticeY = verticeJson["y"]
 
 	##	Return the vertex in a dictionary
 	def toDictFormat(self):
