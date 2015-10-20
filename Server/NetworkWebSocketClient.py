@@ -21,8 +21,6 @@ class NetworkServerSocketClient(Thread):
 		self.server.serveforever()
 	
 	def broadcastAll(self,jsonMessage):
-		print jsonMessage
-		print "client"
 		for c in clients:
 			c.sendMessage(json.dumps(jsonMessage,ensure_ascii=False))
 
@@ -30,7 +28,7 @@ class ClientWebSocket(WebSocket):
 
 	def handleMessage(self):
 		# echo message back to client
-		self.sendMessage(self.data)
+		print self.data
 		clientMessageHandle = json.loads(self.data)
 		print messageHandle
 		if messageHandle.keys()[0] == "cabRequest":

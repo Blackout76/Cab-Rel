@@ -92,7 +92,6 @@ class TaxiManager:
 
 	def onCabInfo(self):
 		cabInfoJson = self.toDictFormatTaxiList()
-		print cabInfoJson
 		NetworkWebSocketClient.server_client.broadcastAll(cabInfoJson)
 		NetworkWebSocketDevice.server_device.broadcastAll(cabInfoJson)
 

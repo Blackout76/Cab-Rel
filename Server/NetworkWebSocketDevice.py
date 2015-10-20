@@ -21,8 +21,6 @@ class NetworkServerSocketDevice(Thread):
 		self.server.serveforever()
 
 	def broadcastAll(self,jsonMessage):
-		print jsonMessage
-		print"device"
 		for d in devices:
 			d.sendMessage(json.dumps(jsonMessage,ensure_ascii=False))
 
@@ -30,20 +28,18 @@ class DeviceWebSocket(WebSocket):
 
 	def handleMessage(self):
 		# echo message back to client
-		self.sendMessage(self.data)
 		deviceMessageHandle = json.loads(self.data)
-		print deviceMessageHandle
 		if deviceMessageHandle["cmd"] == "requestAnswer":
 			print "requestAnswer"
-			TaxiManager.taximanager.onRequestAnswer(deviceMessageHandle["answer"])
+			TaxiManager.taxiManager.onRequestAnswer(deviceMessageHandle["answer"])
 		elif deviceMessageHandle["cmd"] == "cabInfo":
 			print "cabInfo"
-			TaxiManager.taximanager.onCabInfo()
+			TaxiManager.taxiManager.onCabInfo()
 			
 
 	def handleConnected(self):
 		devices.append(self)
-		TaxiManager.taximanager.newTaxi()
+		TaxiManager.taxiManager.newTaxi()
 		print self.address, 'connected'
 
 	def handleClose(self):
