@@ -57,7 +57,7 @@ class TaxiManager:
 		print 'New cab request created!'
 		# Olivier: Auto broadcast on new cab request
 		cabQueueJson = self.toDictFormatCabRequest()
-		NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabQueueJson)
+		#NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabQueueJson)
 
 	##	Return the taxi list to dictionary format
 	def toDictFormatTaxiList(self):
@@ -84,16 +84,17 @@ class TaxiManager:
 			if self.taxiList[0].destination == None:
 				self.taxiList[0].destination = self.cabRequestList[0] 
 				cabInfoJson = self.toDictFormatCabRequest()
-				NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
+				#NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
 		else:
 			print "del cab request and resend cabrequestslist"
-			self.cabRequestList.pop(0)
 			cabQueueJson = self.toDictFormatCabRequest
-			NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabQueueJson)
+			#NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabQueueJson)
+		self.cabRequestList.pop(0)
 
 	def onCabInfo(self):
 		cabInfoJson = self.toDictFormatTaxiList()
-		NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
+		print cabInfoJson
+		#NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
 	def getCabInfo(self):
 		return self.toDictFormatTaxiList()
 		
