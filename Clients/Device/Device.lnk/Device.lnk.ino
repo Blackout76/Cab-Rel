@@ -39,8 +39,13 @@ String adrServ;
 int prtServ;
 char* idCab = "32";
 int i = 0;
+
+
 String areaNow;
 String streetNow;
+double DistanceOdo;
+String areaDest;
+String streetDest;
 
 
 int screenWidth = 16;
@@ -64,6 +69,7 @@ bool stateFreeCab = true;
 bool doConnect = false;
 bool acceptRequest = false;
 bool refusedRequest = false;
+bool request = false;
 
 // function definitions
 void parseJson(char *jsonString) ;
@@ -98,6 +104,9 @@ void setup()
   Serial.print("IP = ");
   Serial.println(Ethernet.localIP());
 
+
+  DistanceOdo = 0;
+
 }
 
 void loop ()
@@ -116,7 +125,7 @@ void loop ()
         }
       case btnLEFT:
         {
-          Serial.print("accept request");
+          Serial.print("refused request");
           refusedRequest = true;
           break;
         }
@@ -155,36 +164,59 @@ void loop ()
 
   if (wsClient.connected())
   {
+    Serial.print("etat du cab :  ");
+    Serial.println(stateFreeCab);
     if (stateFreeCab)
     {
-      if (acceptRequest == true)
-      {
-        wsClient.send("{\"cmd\":\"requestAnswer\" ,\"idRequest\": \"D32\",\"answer\":\"yes\"}");
-        //
-        acceptRequest = refusedRequest = false;
-        stateFreeCab = false;
-      }
-      else
-      {
-        if (refusedRequest == true)
+      if (request) {
+        Serial.println("New request agree or not?");
+        lcd.clear();
+         lcd.setCursor(0, 0);
+         lcd.print("New request agree");
+         //displayInfo("FREE  d:0,0km", "New request agree or not?");
+        if (acceptRequest == true)
         {
-          wsClient.send("{\"cmd\":\"requestAnswer\" ,\"idRequest\": \"D32\",\"answer\":\"no\"}");
+          wsClient.send("{\"cmd\":\"requestAnswer\" ,\"idRequest\": \"D32\",\"answer\":\"yes\"}");
           //
-          acceptRequest = refusedRequest = false;
+          acceptRequest = refusedRequest = request = false;
+          stateFreeCab = false;
+          //displayInfo("BUSY", "Request accepted");
         }
         else
         {
-          Serial.println("j'envoi cabInfo");
-          wsClient.send("{\"cmd\": \"cabInfo\"}");
-          wsClient.onMessage(onMessage);
-
-          displayInfo("FREE  d:0,0km", "area :" + areaNow + ", street : " + streetNow);
+          if (refusedRequest == true)
+          {
+            wsClient.send("{\"cmd\":\"requestAnswer\" ,\"idRequest\": \"D32\",\"answer\":\"no\"}");
+            //
+            acceptRequest = refusedRequest = request = false;
+          }
         }
+      }
+      else
+      {
+        Serial.println("j'envoi cabInfo");
+        wsClient.send("{\"cmd\": \"cabInfo\"}");
+        wsClient.onMessage(onMessage);
+
+        displayInfo("FREE  d:0,0km", "area :" + areaNow + ", street : " + streetNow);
       }
     }
     else
     {
-      Serial.println("je suis dans le busy");
+      wsClient.send("{\"cmd\": \"cabInfo\"}");
+      wsClient.onMessage(onMessage);
+        
+       Serial.println("je suis dans le busy");
+      if (DistanceOdo > 0)
+      {  
+         displayInfo("BUSY  d:km", "area :" + areaNow + ", street : " + streetNow);
+        Serial.println("je suis dans le busy et odometer");
+      }
+      else
+      {
+        Serial.print("Race done");
+        stateFreeCab = true;
+      }
     }
     wsClient.onError(onError);
   }
@@ -242,11 +274,11 @@ void connectServer(IPAddress Adress , int HttpPort )
     bool cond = false;
     while (clientHttp.available())
     {
-      /*
+      
       char c = clientHttp.read();
       getHttp += c;
-      */
-
+/*
+      
       char c = clientHttp.read();
       Serial.print(c);
       if (adr)
@@ -263,13 +295,12 @@ void connectServer(IPAddress Adress , int HttpPort )
       }
       if (c == '/' and tmp == '/') adr = true;
       tmp = c;
-
-
+*/
     }
 
     //disconnect to Http
     closeConnectionHttp();
-    /*
+    
         Serial.println("gethttp" + getHttp);
         int cc = getHttp.lastIndexOf("{");
         aJsonObject* root = aJson.parse(strToChar(getHttp.substring(cc)));
@@ -297,15 +328,15 @@ void connectServer(IPAddress Adress , int HttpPort )
         //adding the chain end character
         adrServ.concat("\0");
 
-        connectWebSocketClient(adrServ, prtServ);*/
-
+        connectWebSocketClient(adrServ, prtServ);
+/*
     Serial.println("adr :" + addressServ);
     Serial.println("prt: " + portServ);
 
     //adding the chain end character
     addressServ.concat("\0");
 
-    connectWebSocketClient(addressServ, portServ.toInt());
+    connectWebSocketClient(addressServ, portServ.toInt());*/
   }
   else
   {
@@ -315,13 +346,13 @@ void connectServer(IPAddress Adress , int HttpPort )
 
 void closeConnectionHttp()
 {
-  Serial.println("Deconecter de http");
+  Serial.println("disconnect to http");
   clientHttp.stop();
 }
 
 void closeWebSocketClient( )
 {
-  Serial.println("Deconecter de Web");
+  Serial.println("Disconnect to web");
   wsClient.disconnect();
 }
 
@@ -368,9 +399,15 @@ void parseJson(char *jsonString)
 
     if (cabInfo != NULL)
     {
-      //Serial.println("Parsed successfully 3 " );
-      aJsonObject* loc_now = aJson.getObjectItem(cabInfo, "loc_now");
+      aJsonObject* odometer = aJson.getObjectItem(cabInfo, "odometer");
 
+      if(odometer != NULL)
+      {
+          DistanceOdo = odometer->valuefloat;
+          Serial.println(DistanceOdo);
+      }
+            
+      aJsonObject* loc_now = aJson.getObjectItem(cabInfo, "loc_now");
       if (loc_now != NULL)
       {
         //Serial.println("Parsed successfully 4 " );
@@ -391,29 +428,24 @@ void parseJson(char *jsonString)
         }
       }
 
-      //Serial.println("Parsed successfully 3 " );
-      aJsonObject* request = aJson.getObjectItem(cabInfo, "request");
-
-      if (request != NULL)
+         if (loc_now != NULL)
       {
-        aJsonObject* area = aJson.getObjectItem(request, "area");
-        aJsonObject* street = aJson.getObjectItem(request, "street");
+        //Serial.println("Parsed successfully 4 " );
+        aJsonObject* aread = aJson.getObjectItem(loc_now, "area");
+        //Serial.println("Parsed successfully 4 " );
+        aJsonObject* locationd = aJson.getObjectItem(loc_now, "location");
 
-        if (area != NULL)
+        if (aread != NULL)
         {
-          Serial.println( area->valuestring);
+          //Serial.println("Parsed successfully 5 " );
+          Serial.println("area dest : "+areaDest);
+          areaDest = aread->valuestring;
         }
-        if (street != NULL)
+        if (locationd != NULL)
         {
-          areaNow = street->valuestring;
+          Serial.println("street dest : "+streetDest);
+          streetDest = locationd->valuestring;
         }
-        else
-        {
-          Serial.println("street est null");
-          Serial.print(request->valuestring);
-        }
-      } else {
-        Serial.println("request est null");
       }
     }
 
@@ -421,28 +453,8 @@ void parseJson(char *jsonString)
     aJsonObject* cabQueue = aJson.getObjectItem(root, "cabQueue");
     if (cabQueue != NULL)
     {
-      //Serial.println("Parsed successfully 3 " );
-      aJsonObject* area = aJson.getObjectItem(cabQueue, "area");
-
-      //Serial.println("Parsed successfully 3 " );
-      aJsonObject* location = aJson.getObjectItem(cabQueue, "location");
-
-      if (location != NULL)
-      {
-        //Serial.println("Parsed successfully 3 " );
-        aJsonObject* locationType = aJson.getObjectItem(location, "locationType");
-        if (locationType != NULL)
-        {
-          /*    if(locationType->valuestring.equals("street"))
-              {
-
-              }
-              else
-              {
-
-              }*/
-        }
-      }
+      Serial.print("Une requete a été faites");
+      request = true;
     }
 
   }
