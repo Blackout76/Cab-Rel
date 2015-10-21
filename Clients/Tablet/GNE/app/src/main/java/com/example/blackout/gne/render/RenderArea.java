@@ -21,15 +21,13 @@ public class RenderArea  {
     private RenderTaxi renderTaxi;
     private ArrayList<RenderStreet> renderStreets;
     private ArrayList<RenderVertice> renderVertices;
-
+    public static int scale_x, scale_y;
 
 
 	public void loadArea(int iWidth, int iHeight, MapArea mapArea) {
 		
-	    int scale_x = (int)(iWidth/ mapArea.getWidth());
-        //Log.e("iwidth", ""+iWidth);
-	    int scale_y = (int)(iHeight/ mapArea.getHeight());
-        //Log.e("iheight", ""+iHeight);
+	    this.scale_x = (int)(iWidth/ mapArea.getWidth());
+	    this.scale_y = (int)(iHeight/ mapArea.getHeight());
 	    renderStreets(scale_x, scale_y, mapArea.getStreets());
 	    renderVertices(scale_x, scale_y, mapArea);
        	renderTaxis(scale_x, scale_y, mapArea);

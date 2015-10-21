@@ -6,20 +6,59 @@ import android.util.Log;
 import com.example.blackout.gne.General.CPoint;
 import com.example.blackout.gne.General.Utils;
 import com.example.blackout.gne.MainActivity;
+import com.example.blackout.gne.Map.MapArea;
 import com.example.blackout.gne.Map.MapStreet;
+import com.example.blackout.gne.Map.MapVertice;
 import com.example.blackout.gne.render.RenderArea;
 import com.example.blackout.gne.render.RenderView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 
 public class TaxiManager {
 
+	private ArrayList<TaxiRequest> taxiRequests = new ArrayList<>();
+
+    public void loadRequests(JSONObject json){
+        taxiRequests = new ArrayList<>();
+        try {
+            ArrayList<JSONObject> requests = null;
+
+                requests = (ArrayList<JSONObject>) json.get("cabQueue");
+
+            for(JSONObject request : requests){
+                MapArea area = MainActivity.mapManager.getAreaByName(request.get("area").toString());
+                if(((JSONObject)request.get("location")).get("locationType").toString().equals("street")){
+                    MapStreet street = area.getStreetByName( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("name").toString() );
+                    float progression = Float.parseFloat( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("progression").toString());
+                    MapVertice originPoint = area.getVerticeByName( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("from").toString() );
+
+                    CPoint point = Utils.computePointToProgression(originPoint,street,progression);
+                    taxiRequests.add(new TaxiRequest(point,area));
+                }
+                else{
+                    MapVertice originPoint = area.getVerticeByName( ((JSONObject)request.get("location")).get("location").toString() );
+                    taxiRequests.add(new TaxiRequest(originPoint.toPoint(),area));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+       MainActivity.ihm.invalidate();
+    }
+
+    public ArrayList<TaxiRequest> getTaxiRequest(){
+        return this.taxiRequests;
+    }
+
 	public void createRequestAtPoint(CPoint startPoint){
         TaxiRequest taxiRequest = new TaxiRequest(computeBestInterceptStreet(startPoint));
       Log.i("[tAXI]", "new taxi request created !");
-       	//System.out.println(taxiRequest.toJSON());
        	MainActivity.webSocket.sendTaxiRequest(taxiRequest);
 	}
 

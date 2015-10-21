@@ -1,5 +1,8 @@
 package com.example.blackout.gne.General;
 
+import com.example.blackout.gne.Map.MapStreet;
+import com.example.blackout.gne.Map.MapVertice;
+
 import java.util.HashMap;
 
 
@@ -26,9 +29,9 @@ public class Utils {
 		/*
 		 * Compute height of Triangle
 		 */
-		double angle = computeAngleOrient(A,B,C);
+		double angle = computeAngleOrient(A, B, C);
 		double norme_AC = Math.sqrt(Math.pow(C.getX() - A.getX(), 2)+Math.pow(C.getY() - A.getY(), 2));
-		double height = Math.sin(angle*(Math.PI/180))*norme_AC;
+		double height = Math.sin(angle * (Math.PI / 180))*norme_AC;
 		return height;
 	}
 	public static double computeDistOfHeightTriangle(CPoint A, CPoint B, CPoint C){
@@ -37,7 +40,7 @@ public class Utils {
 		 */
 		double angle = computeAngleOrient(A,B,C);
 		double norme_AC = Math.sqrt(Math.pow(C.getX() - A.getX(), 2)+Math.pow(C.getY() - A.getY(), 2));
-		double dist = Math.cos(angle*(Math.PI/180))*norme_AC;
+		double dist = Math.cos(angle * (Math.PI / 180))*norme_AC;
 		
 		return dist;
 	}
@@ -63,7 +66,7 @@ public class Utils {
 
 	private static HashMap<String, Object> computePointOfHeightIntercept(Double distHeight,CPoint A, CPoint B, CPoint C) {
 		HashMap<String, Object> result = new HashMap<>();
-		double angle_absis = computeAngleOrient(A,B,new CPoint( (int)(A.getX()+50) , (int) A.getY() ));
+		double angle_absis = computeAngleOrient(A, B, new CPoint((int) (A.getX() + 50), (int) A.getY()));
 		double norme_AB = Math.sqrt(Math.pow(B.getX() - A.getX(), 2)+Math.pow(B.getY() - A.getY(), 2));
 		if(distHeight <= 0){
 			result.put("x", (double) A.getX());
@@ -88,6 +91,28 @@ public class Utils {
 			result.put("indexVertice",  0);
 		}
 		return result;
+	}
+
+	public static CPoint computePointToProgression(MapVertice originPoint,MapStreet street, float progression) {
+		CPoint A = originPoint.toPoint();
+		CPoint B = null;
+		if(street.getPath().get(0).getName().equals(originPoint.getName()))
+			B = street.getPath().get(street.getPath().size()-1).toPoint();
+		else
+			B = street.getPath().get(0).toPoint();
+
+		double angle_absis = Utils.computeAngleOrient(A,B,new CPoint( (int)(A.getX()+50) , (int) A.getY() ));
+		double norme_AB = Math.sqrt(Math.pow(B.getX() - A.getX(), 2)+Math.pow(B.getY() - A.getY(), 2));
+		double dist_fromA = norme_AB * progression;
+
+		float x,y;
+		x = (float) (A.getX() + Math.cos(angle_absis*(Math.PI/180))*dist_fromA);
+		if(A.getY() >= B.getY())
+			y = (float) (A.getY() - Math.sin(angle_absis*(Math.PI/180))*dist_fromA);
+		else
+			y = (float) (A.getY() + Math.sin(angle_absis*(Math.PI/180))*dist_fromA);
+
+		return new CPoint(x,y);
 	}
 	
 }

@@ -29,7 +29,6 @@ public class RenderView extends View  {
         this.height=getContext().getResources().getDisplayMetrics().heightPixels;
         this.width=getContext().getResources().getDisplayMetrics().widthPixels;
 
-
     }
 
 
@@ -65,8 +64,6 @@ public class RenderView extends View  {
                 if(MainActivity.ihm.getNameOfActiveArea() != null && MainActivity.mapManager.getAreaByName(MainActivity.ihm.getNameOfActiveArea()) != null)
                     MainActivity.taxiManager.createRequestAtPoint(new CPoint(x,y));
         }
-
         return true;
-
     }
 }

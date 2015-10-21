@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 
 import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.Map.MapArea;
+import com.example.blackout.gne.Taxi.TaxiRequest;
 
 public class RenderMap {
     private RenderArea area;
@@ -15,6 +16,13 @@ public class RenderMap {
 
     public void render(int iWidth, int iHeight, Canvas canvas) {
         area.render(iWidth, iHeight,canvas);
+        if(MainActivity.taxiManager != null && MainActivity.taxiManager.getTaxiRequest() != null)
+            for(TaxiRequest taxiRequest : MainActivity.taxiManager.getTaxiRequest()){
+                if(taxiRequest.getArea().getName().equals(MainActivity.ihm.getNameOfActiveArea())){
+                    RenderCabRequest renderTaxiRequest  = new RenderCabRequest(taxiRequest.getPosition());
+                    renderTaxiRequest.render(RenderArea.scale_x, RenderArea.scale_y, canvas);
+                }
+            }
     }
 
 

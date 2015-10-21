@@ -18,23 +18,28 @@ public class TaxiRequest {
 	private MapVertice originVertice;
 	private MapStreet street;
 	private MapArea area;
-	
-	public TaxiRequest (HashMap<String, Object> infos){
+
+	public TaxiRequest(CPoint position, MapArea area) {
+		this.intersectedPoint = new CPoint(position);
+		this.area = area;
+	}
+
+	public TaxiRequest(HashMap<String, Object> infos) {
 		this.area = MainActivity.mapManager.getAreaByName(MainActivity.ihm.getNameOfActiveArea());
 		this.street = this.area.getStreetByName((String) infos.get("streetName"));
-		this.originVertice = this.street.getPath().get( (int)( ((HashMap<String, Object>)infos.get("pointIntercept")).get("indexVertice") ) );
-		this.pourcentIntersect = (double)infos.get("pourcentHeight");
-		this.intersectedPoint = new CPoint( Float.parseFloat( ((HashMap<String, Object>)infos.get("pointIntercept")).get("x").toString() ),  
-				 							Float.parseFloat(((HashMap<String, Object>)infos.get("pointIntercept")).get("y").toString()	));
+		this.originVertice = this.street.getPath().get((int) (((HashMap<String, Object>) infos.get("pointIntercept")).get("indexVertice")));
+		this.pourcentIntersect = (double) infos.get("pourcentHeight");
+		this.intersectedPoint = new CPoint(Float.parseFloat(((HashMap<String, Object>) infos.get("pointIntercept")).get("x").toString()),
+				Float.parseFloat(((HashMap<String, Object>) infos.get("pointIntercept")).get("y").toString()));
 	}
-	
-	public JSONObject toJSON(){
+
+	public JSONObject toJSON() {
 		JSONObject json = new JSONObject();
 		JSONObject locationMap = new JSONObject();
 		JSONObject locationIntercept = new JSONObject();
 		JSONObject infos = new JSONObject();
-		
-		if(this.pourcentIntersect == 0){
+
+		if (this.pourcentIntersect == 0) {
 
 			try {
 				locationMap.put("locationType", "street");
@@ -44,8 +49,7 @@ public class TaxiRequest {
 				e.printStackTrace();
 			}
 
-		}
-		else{
+		} else {
 			try {
 				locationIntercept.put("from", this.originVertice.getName());
 				locationIntercept.put("to", this.street.getOposedVerticeFromVertice(this.originVertice.getName()));
@@ -69,5 +73,13 @@ public class TaxiRequest {
 		}
 
 		return json;
+	}
+
+	public CPoint getPosition() {
+		return this.intersectedPoint;
+	}
+
+	public MapArea getArea() {
+		return this.area;
 	}
 }
