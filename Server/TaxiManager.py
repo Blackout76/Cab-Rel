@@ -3,6 +3,7 @@ from MapManager import *
 from Taxi import *
 import NetworkWebSocket
 import server
+from math import *
 
 taxiManager = None
 ##	Manage all Taxis
@@ -84,7 +85,8 @@ class TaxiManager:
 				self.taxiList[0].destination = self.cabRequestList[0] 
 				cabInfoJson = self.toDictFormatCabRequest()
 				NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
-			self.cabRequestList.pop(0)
+				self.cabRequestList.pop(0)
+				self.startMove()
 		else:
 			self.cabRequestList.pop(0)
 			cabQueueJson = self.toDictFormatCabRequest
@@ -97,5 +99,19 @@ class TaxiManager:
 	def getCabInfo(self):
 		return self.toDictFormatTaxiList()
 		
+	def startMove(self):
+		distTaxiToVertexFrom = 0.0
+		distTaxiToVertexTo = 0.0
+		distFinishToVertexFrom = 0.0
+		distFinishToVertexTo = 0.0
+		if self.taxiList[0].destination.locationRequest.locationType == "street":
+			taxiX = ((1-self.taxiList[0].destination.locationRequest.progression) * self.taxiList[0].destination.locationRequest.vertexFrom.verticeX + self.taxiList[0].destination.locationRequest.progression * self.taxiList[0].destination.locationRequest.vertexTo.verticeX)
+			taxiY = ((1-self.taxiList[0].destination.locationRequest.progression) * self.taxiList[0].destination.locationRequest.vertexFrom.verticeY + self.taxiList[0].destination.locationRequest.progression * self.taxiList[0].destination.locationRequest.vertexTo.verticeY)
+			distTaxiToVertexFrom = sqrt((taxiX-self.taxiList[0].destination.locationRequest.vertexFrom.verticeX)*(taxiX-self.taxiList[0].destination.locationRequest.vertexFrom.verticeX)+(taxiY-self.taxiList[0].destination.locationRequest.vertexFrom.verticeY)*(taxiY-self.taxiList[0].destination.locationRequest.vertexFrom.verticeY))
+			distTaxiToVertexTo = sqrt((self.taxiList[0].destination.locationRequest.vertexTo.verticeX-taxiX)*(self.taxiList[0].destination.locationRequest.vertexTo.verticeX-taxiX)+(self.taxiList[0].destination.locationRequest.vertexTo.verticeY-taxiY)*(self.taxiList[0].destination.locationRequest.vertexTo.verticeY-taxiY))
 
-
+		if self.taxiList[0].loc_now.locationType == "street":
+			finishX = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeX + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeX)
+			finishY = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeY + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeY)
+			distFinishToVertexFrom = sqrt((xb-taxiX)*(xb-taxiX)+(yb-taxiY)*(yb-taxiY))
+			distFinishToVertexTo = sqrt((taxiX-xa)*(taxiX-xa)+(taxiY-ya)*(taxiY-ya))
