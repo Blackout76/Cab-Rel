@@ -4,7 +4,7 @@ from Taxi import *
 import NetworkWebSocket
 import server
 import TaxiMove
-import math from *
+from math import sqrt
 
 taxiManager = None
 ##	Manage all Taxis
