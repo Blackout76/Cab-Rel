@@ -43,6 +43,7 @@ class MapManager:
 			#initialise a new area
 			newArea = Area(newAreaJson)
 			self.areasDict[newAreaJson["name"]] = newArea
+		self.initTree()
 
 	##	Return the map to format json
 	def toDictFormat(self):
