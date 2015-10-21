@@ -137,8 +137,8 @@ class DijkstraTree:
 			self.nodeLeft.pop(nodeIndex)
 			cmptListId = -1
 
-		finalPath.append(finalWeight)
 		finalPath = self.findPath(endPoint)
+		finalPath.append(finalWeight)
 		print finalPath
 		return finalPath
 
