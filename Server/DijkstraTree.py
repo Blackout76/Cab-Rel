@@ -81,6 +81,7 @@ class DijkstraTree:
 		currentWeight = -1
 		nodeListId = -1
 		cmptListId = -1
+		finalWeight = {}
 		self.initDijkstra(startPoint)
 		while len(self.nodeLeft) > 0 and endIsFound == False:
 			for nodeLeft in self.nodeLeft:
@@ -89,6 +90,7 @@ class DijkstraTree:
 					if node["area"] == nodeLeft["area"] and node["vertex"] == nodeLeft["vertex"]:
 						if (node["dist"] < currentWeight and node["dist"] >= 0) or currentWeight < 0:
 							currentWeight = node["dist"]
+							finalWeight["totalWeight"] = currentWeight
 							currentNode["vertex"] = node["vertex"]
 							currentNode["area"] = node["area"]
 							nodeIndex = cmptListId
@@ -130,11 +132,14 @@ class DijkstraTree:
 											prevNode = prevNodeCouple["prevNode"]
 											prevNode["area"] = currentNode["area"]
 											prevNode["vertex"] = currentNode["vertex"]
+
 			currentWeight = -1
 			self.nodeLeft.pop(nodeIndex)
 			cmptListId = -1
 
+		finalPath.append(finalWeight)
 		finalPath = self.findPath(endPoint)
+		print finalPath
 		return finalPath
 
 	##	Initiallise all variable to start the dijsktra algorithm
