@@ -13,7 +13,6 @@ class Location:
 		self.vertexFrom = None
 		self.vertexTo =  None
 		self.progression = 0
-		self.street = None
 		self.location = None
 		self.onUpdateLocation(locationData, mapManagerTaxi)
 
@@ -37,7 +36,6 @@ class Location:
 			locationSeg["to"] = self.vertexTo.verticeName #self.vertexTo.verticeTo.verticeName Olivier change
 			locationSeg["progression"] = self.progression
 			#take the name of the street
-			locationSeg["name"] = self.street.streetName
 			location["location"] = locationSeg
 		return location
 
@@ -52,7 +50,6 @@ class Location:
 			self.vertexFrom = None
 			self.vertexTo =  None
 			self.progression = 0
-			self.street = None
 		else:
 			location = locationData["location"]
 			self.location = None
@@ -61,5 +58,3 @@ class Location:
 			#take the instance of the vertex "to" in the json in the vertices list
 			self.vertexTo = mapManagerTaxi.areasDict[locationData["area"]].verticesDict[location["to"]]
 			self.progression = location["progression"]
-			#take the instance of the street in the json in the streets list
-			self.street = mapManagerTaxi.areasDict[locationData["area"]].streetsDict[location["name"]]
