@@ -127,6 +127,7 @@ class TaxiManager:
 		distTaxiToVertexTo = 0.0
 		distFinishToVertexFrom = 0.0
 		distFinishToVertexTo = 0.0
+		path = []
 		if self.taxiList[0].destination.locationRequest.locationType == "street":
 			taxiX = ((1-self.taxiList[0].destination.locationRequest.progression) * self.taxiList[0].destination.locationRequest.vertexFrom.verticeX + self.taxiList[0].destination.locationRequest.progression * self.taxiList[0].destination.locationRequest.vertexTo.verticeX)
 			taxiY = ((1-self.taxiList[0].destination.locationRequest.progression) * self.taxiList[0].destination.locationRequest.vertexFrom.verticeY + self.taxiList[0].destination.locationRequest.progression * self.taxiList[0].destination.locationRequest.vertexTo.verticeY)
@@ -136,5 +137,106 @@ class TaxiManager:
 		if self.taxiList[0].loc_now.locationType == "street":
 			finishX = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeX + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeX)
 			finishY = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeY + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeY)
-			distFinishToVertexFrom = sqrt((xb-taxiX)*(xb-taxiX)+(yb-taxiY)*(yb-taxiY))
-			distFinishToVertexTo = sqrt((taxiX-xa)*(taxiX-xa)+(taxiY-ya)*(taxiY-ya))
+			distFinishToVertexFrom = sqrt((self.taxiList[0].loc_now.vertexFrom.verticeX-finishX)*(self.taxiList[0].loc_now.vertexFrom.verticeX-finishX)+(self.taxiList[0].loc_now.vertexFrom.verticeY-finishY)*(self.taxiList[0].loc_now.vertexFrom.verticeY-finishY))
+			distFinishToVertexTo = sqrt((finishX-self.taxiList[0].loc_now.vertexTo.verticeX)*(finishX-self.taxiList[0].loc_now.vertexTo.verticeX)+(finishY-self.taxiList[0].loc_now.vertexTo.verticeY)*(finishY-self.taxiList[0].loc_now.vertexTo.verticeY))
+
+
+		if self.taxiList[0].destination.locationRequest.locationType == "street":
+			if self.taxiList[0].loc_now.locationType == "street":
+				tmpPath = []
+				endPoint = {}
+				startPoint = {}
+				endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+				endPoint["vertex"] = self.taxiList[0].destination.locationRequest.vertexFrom.verticeName
+				startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+				startPoint["vertex"] = self.taxiList[0].loc_now.vertexFrom.verticeName
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				for item in path:
+					tmpPath.append(item)
+
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				if path[0] < tmpPath[0]:
+					tmpPath =[]
+					endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+					endPoint["vertex"] = self.taxiList[0].destination.locationRequest.vertexFrom.verticeName
+					startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+					startPoint["vertex"] = self.taxiList[0].loc_now.vertexTo.verticeName
+					for item in path:
+						tmpPath.append(item)
+
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				if path[0] < tmpPath[0]:
+					tmpPath =[]
+					endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+					endPoint["vertex"] = self.taxiList[0].destination.locationRequest.vertexTo.verticeName
+					startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+					startPoint["vertex"] = self.taxiList[0].loc_now.vertexFrom.verticeName
+					for item in path:
+						tmpPath.append(item)
+
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				if path[0] < tmpPath[0]:
+					tmpPath =[]
+					endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+					endPoint["vertex"] = self.taxiList[0].destination.locationRequest.vertexTo.verticeName
+					startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+					startPoint["vertex"] = self.taxiList[0].loc_now.vertexTo.verticeName
+					for item in path:
+						tmpPath.append(item)
+
+				path = tmpPath
+				path.pop(0)
+			else:
+				tmpPath = []
+				endPoint = {}
+				startPoint = {}
+				endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+				endPoint["vertex"] = self.taxiList[0].destination.locationRequest.vertexFrom.verticeName
+				startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+				startPoint["vertex"] = self.taxiList[0].loc_now.location.verticeName
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				for item in path:
+					tmpPath.append(item)
+
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				if path[0] < tmpPath[0]:
+					tmpPath =[]
+					endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+					endPoint["vertex"] = self.taxiList[0].destination.locationRequest.vertexTo.verticeName
+					for item in path:
+						tmpPath.append(item)
+				path = tmpPath
+				path.pop(0)
+		else:
+			if self.taxiList[0].loc_now.locationType == "street":
+				tmpPath = []
+				endPoint = {}
+				startPoint = {}
+				endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+				endPoint["vertex"] = self.taxiList[0].destination.locationRequest.location.verticeName
+				startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+				startPoint["vertex"] = self.taxiList[0].loc_now.vertexFrom.verticeName
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				for item in path:
+					tmpPath.append(item)
+
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				if path[0] < tmpPath[0]:
+					tmpPath =[]
+					startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+					startPoint["vertex"] = self.taxiList[0].loc_now.vertexTo.verticeName
+					for item in path:
+						tmpPath.append(item)
+				path = tmpPath
+				path.pop(0)
+			else:
+				endPoint = {}
+				startPoint = {}
+				endPoint["area"] = self.taxiList[0].destination.locationRequest.areaLocation.areaName
+				endPoint["vertex"] = self.taxiList[0].destination.locationRequest.location.verticeName
+				startPoint["area"] = self.taxiList[0].loc_now.areaLocation.areaName
+				startPoint["vertex"] = self.taxiList[0].loc_now.location.verticeName
+				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
+				path.pop(0)
+
+		return path
