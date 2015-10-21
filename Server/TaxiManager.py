@@ -80,13 +80,12 @@ class TaxiManager:
 
 	def onRequestAnswer(self, answer):
 		if answer == "yes":
-			print "mod taxi info and send it"
 			if self.taxiList[0].destination == None:
 				self.taxiList[0].destination = self.cabRequestList[0] 
 				cabInfoJson = self.toDictFormatCabRequest()
 				NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
+			self.cabRequestList.pop(0)
 		else:
-			print "del cab request and resend cabrequestslist"
 			self.cabRequestList.pop(0)
 			cabQueueJson = self.toDictFormatCabRequest
 			NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabQueueJson)
@@ -94,6 +93,7 @@ class TaxiManager:
 	def onCabInfo(self):
 		cabInfoJson = self.toDictFormatTaxiList()
 		NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
+
 	def getCabInfo(self):
 		return self.toDictFormatTaxiList()
 		

@@ -1,9 +1,20 @@
+
+##	Dijkstra algorithm
+#
+#	More details.
 class DijkstraTree:
+	##	The constructor
+	#	@param areasDict areas datas to creat the tree for dijkstra algorithm
 	def __init__(self, areasDict):
+		#Nodes List
 		self.nodesList = []
+		#Arcs List composed of two nodes and a weight between both
 		self.arcsList = []
+		#Node with his total weight
 		self.distNode = []
+		#Node with his prevent node
 		self.prevNode = []
+		#List of nodes don't choose with the dijkstra algorithm
 		self.nodeLeft = []
 		for area in areasDict:
 			for vertex in areasDict[area].verticesDict:
@@ -36,6 +47,8 @@ class DijkstraTree:
 				arc["weight"] = bridge.bridgeWeight
 				self.arcsList.append(arc)
 
+	##	Initiallise all variable to start the dijsktra algorithm
+	#	@param startPoint first point of the path
 	def initDijkstra(self, startPoint):
 		self.distNode = []
 		self.prevNode = []
@@ -58,7 +71,9 @@ class DijkstraTree:
 			prevNodeCouple["node"] = node
 			self.prevNode.append(prevNodeCouple)
 
-
+	##	Initiallise all variable to start the dijsktra algorithm
+	#	@param startPoint first point of the path
+	#	@param endPoint final point of the path
 	def findShortestPath(self, startPoint, endPoint):
 		endIsFound = False
 		currentNode = {}
@@ -101,7 +116,6 @@ class DijkstraTree:
 											prevNode["area"] = currentNode["area"]
 											prevNode["vertex"] = currentNode["vertex"]
 
-
 					elif node2["area"] == currentNode["area"] and node2["vertex"] == currentNode["vertex"]:
 						for node in self.distNode:
 							if node1["area"] == node["area"] and node1["vertex"] == node["vertex"]:
@@ -119,9 +133,12 @@ class DijkstraTree:
 			currentWeight = -1
 			self.nodeLeft.pop(nodeIndex)
 			cmptListId = -1
+
 		finalPath = self.findPath(endPoint)
 		return finalPath
 
+	##	Initiallise all variable to start the dijsktra algorithm
+	#	@param endPoint final point of the path
 	def findPath(self, endPoint):
 		finalPath = []
 		currentNode = {}
