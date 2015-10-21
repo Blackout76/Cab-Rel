@@ -47,51 +47,81 @@ class DijkstraTree:
 				distNode["dist"] = -1
 			self.distNode.append(distNode)
 			self.nodeLeft.append(node)
+			prevNodeCouple = {}
 			prevNode = {}
-			prevNode["prevNode"] = startPoint
-			prevNode["node"] = node
-			self.prevNode.append(prevNode)
+			prevNode["vertex"] = startPoint["vertex"]
+			prevNode["area"] = startPoint["area"]
+			prevNodeCouple["prevNode"] = prevNode
+			prevNodeCouple["node"] = node
+			self.prevNode.append(prevNodeCouple)
 
 
 	def findShortestPath(self, startPoint, endPoint):
 		endIsFound = False
-		currentWeight = -1
 		currentNode = {}
+		finalPath = []
+		currentWeight = -1
+		nodeListId = -1
+		cmptListId = -1
 		self.initDijkstra(startPoint)
 		while len(self.nodeLeft) > 0 and endIsFound == False:
-			for node in self.distNode:
-				if (node["dist"] < currentWeight and node["dist"] >= 0) or currentWeight < 0:
-					currentWeight = node["dist"]
-					currentNode["vertex"] = node["vertex"]
-					currentNode["area"] = node["area"]
+			for nodeLeft in self.nodeLeft:
+				cmptListId = cmptListId + 1
+				for node in self.distNode:
+					if node["area"] == nodeLeft["area"] and node["vertex"] == nodeLeft["vertex"]:
+						if (node["dist"] < currentWeight and node["dist"] >= 0) or currentWeight < 0:
+							currentWeight = node["dist"]
+							currentNode["vertex"] = node["vertex"]
+							currentNode["area"] = node["area"]
+							nodeIndex = cmptListId
+			if currentNode["vertex"] == endPoint["vertex"] and currentNode["area"] == endPoint["area"]:
+				endIsFound = True
 
+			if endIsFound == False:
+				for arc in self.arcsList:
+					node1 = {}
+					node1 = arc["node1"]
+					node2 = {}
+					node2 = arc["node2"]
+					if node1["area"] == currentNode["area"] and node1["vertex"] == currentNode["vertex"]:
+						for node in self.distNode:
+							if node2["area"] == node["area"] and node2["vertex"] == node["vertex"]:
+								tmpDist = arc["weight"]
+								tmpDist = tmpDist + currentWeight
+								if tmpDist < node["dist"] or node["dist"] < 0:
+									node["dist"] = tmpDist
+									for prevNodeCouple in self.prevNode:
+										nodeToUpdate = {}
+										nodeToUpdate = prevNodeCouple["node"]
+										if nodeToUpdate["vertex"] == node2["vertex"] and nodeToUpdate["area"] == node2["area"]:
+											print "toto1"
+											print currentNode
+											prevNode = prevNodeCouple["prevNode"]
+											prevNode["area"] = currentNode["area"]
+											prevNode["vertex"] = currentNode["vertex"]
+
+					elif node2["area"] == currentNode["area"] and node2["vertex"] == currentNode["vertex"]:
+						for node in self.distNode:
+							if node1["area"] == node["area"] and node1["vertex"] == node["vertex"]:
+								tmpDist = arc["weight"]
+								tmpDist = tmpDist + currentWeight
+								if tmpDist < node["dist"] or node["dist"] < 0:
+									node["dist"] = tmpDist
+									for prevNodeCouple in self.prevNode:
+										nodeToUpdate = {}
+										nodeToUpdate = prevNodeCouple["node"]
+										if nodeToUpdate["vertex"] == node1["vertex"] and nodeToUpdate["area"] == node1["area"]:
+											print "toto2"
+											print currentNode
+											prevNode = prevNodeCouple["prevNode"]
+											prevNode["area"] = currentNode["area"]
+											prevNode["vertex"] = currentNode["vertex"]
+			currentWeight = -1
+			self.nodeLeft.pop(nodeIndex)
+			cmptListId = -1
+
+		finalPath = self.findPath(endPoint)
+		return finalPath
+
+	def findPath(self, endPoint):
 		print "TODO"
-
-
-"""			
-	def __init__(self,vertice):
-		self.noeuds = []
-		self.point =  Point(vertice.verticeX,vertice.verticeY,vertice.verticeName)
-
-	def getPoint(self):
-		return self.point
-		
-	def getNoeuds(self):
-		return self.noeuds
-	
-	def addNoeud(self,noeud):
-		if not noeud in self.noeuds:
-			self.noeuds.append(noeud)
-	
-	def toString(self) :
-		a = ""
-		for n in self.noeuds:
-			a += n.getPoint()
-		return self.point + '=>' + a
-
-class Point:
-	def __init__(self,x,y,name):
-		self.name = name
-		self.x = x
-		self.y = y
-"""
