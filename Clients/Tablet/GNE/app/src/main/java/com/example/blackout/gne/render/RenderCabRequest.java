@@ -23,7 +23,7 @@ public class RenderCabRequest {
         Paint p=new Paint();
         p.setColor(Color.CYAN);
         p.setTextSize(75);
-        canvas.drawText("X", scale_x, scale_y, p);
+        canvas.drawText("X", position.x*scale_x, position.y*scale_y, p);
     }
 
     //@Override

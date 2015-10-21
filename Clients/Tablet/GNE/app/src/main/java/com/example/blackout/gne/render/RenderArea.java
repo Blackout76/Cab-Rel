@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.example.blackout.gne.General.CPoint;
 import com.example.blackout.gne.Map.MapArea;
 import com.example.blackout.gne.Map.MapBridge;
 import com.example.blackout.gne.Map.MapStreet;
@@ -18,7 +19,9 @@ import java.util.Map.Entry;
 public class RenderArea  {
     private Point startPoint, endPoint;
     private List<Point[]> lines;
+    private CPoint position;
     private RenderTaxi renderTaxi;
+    private RenderCabRequest renderCabRequest;
     private ArrayList<RenderStreet> renderStreets;
     private ArrayList<RenderVertice> renderVertices;
     public static int scale_x, scale_y;
@@ -62,6 +65,7 @@ public class RenderArea  {
 
     }
 
+
 	public void render(int iWidth, int iHeight, Canvas canvas) {
         if(this.renderStreets != null)
             //print streets
@@ -79,6 +83,7 @@ public class RenderArea  {
        		RenderTaxi rt=this.renderTaxi;
 			rt.render(canvas);
 		}
+
 
 	}
 }

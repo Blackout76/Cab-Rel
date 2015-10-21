@@ -40,10 +40,13 @@ public class WebSocket {
             @Override
             public void onMessage(String msg) {
                 JSONObject msgJSON = null;
-                try {msgJSON = new JSONObject(msg);} catch (JSONException e) { }
                 try {
-                    if (msgJSON.getJSONArray("areas") != null)
+                    msgJSON = new JSONObject(msg);
+                    if (msgJSON.has("areas"))
                         MainActivity.mapManager.loadMap(msgJSON);
+                    else if (msgJSON.has("cabQueue"))
+                        MainActivity.taxiManager.loadRequests(msgJSON);
+                   // Log.e("ertyu", ""+msgJSON);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

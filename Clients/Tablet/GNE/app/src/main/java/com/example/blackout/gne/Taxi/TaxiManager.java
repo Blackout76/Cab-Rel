@@ -12,6 +12,7 @@ import com.example.blackout.gne.Map.MapVertice;
 import com.example.blackout.gne.render.RenderArea;
 import com.example.blackout.gne.render.RenderView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,29 +28,32 @@ public class TaxiManager {
     public void loadRequests(JSONObject json){
         taxiRequests = new ArrayList<>();
         try {
-            ArrayList<JSONObject> requests = null;
+            JSONArray requests = null;
 
-                requests = (ArrayList<JSONObject>) json.get("cabQueue");
 
-            for(JSONObject request : requests){
-                MapArea area = MainActivity.mapManager.getAreaByName(request.get("area").toString());
-                if(((JSONObject)request.get("location")).get("locationType").toString().equals("street")){
-                    MapStreet street = area.getStreetByName( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("name").toString() );
-                    float progression = Float.parseFloat( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("progression").toString());
-                    MapVertice originPoint = area.getVerticeByName( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("from").toString() );
+                requests =json.getJSONArray("cabQueue");
+
+            for(int i = 0; i < requests.length(); i++) {
+                MapArea area = MainActivity.mapManager.getAreaByName(requests.getJSONObject(i).get("area").toString());
+
+                if(((JSONObject)requests.getJSONObject(i).get("location")).get("locationType").toString().equals("street")){
+                    MapStreet street = area.getStreetByName( ((JSONObject) ((JSONObject)requests.getJSONObject(i).get("location")).get("location") ).get("name").toString() );
+                    float progression = Float.parseFloat( ((JSONObject) ((JSONObject)requests.getJSONObject(i).get("location")).get("location") ).get("progression").toString());
+                    MapVertice originPoint = area.getVerticeByName( ((JSONObject) ((JSONObject)requests.getJSONObject(i).get("location")).get("location") ).get("from").toString() );
 
                     CPoint point = Utils.computePointToProgression(originPoint,street,progression);
                     taxiRequests.add(new TaxiRequest(point,area));
                 }
                 else{
-                    MapVertice originPoint = area.getVerticeByName( ((JSONObject)request.get("location")).get("location").toString() );
+                    MapVertice originPoint = area.getVerticeByName( ((JSONObject)requests.getJSONObject(i).get("location")).get("location").toString() );
                     taxiRequests.add(new TaxiRequest(originPoint.toPoint(),area));
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-       MainActivity.ihm.invalidate();
+
+       MainActivity.ihm.postInvalidate();
     }
 
     public ArrayList<TaxiRequest> getTaxiRequest(){

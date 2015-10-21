@@ -61,7 +61,7 @@ public class RenderTaxi {
 
         Paint p=new Paint();
         p.setColor(Color.YELLOW);
-        canvas.drawCircle(50, 50, 50, p);
+        canvas.drawCircle(position.x, position.y, 50, p);
 
 	}
 

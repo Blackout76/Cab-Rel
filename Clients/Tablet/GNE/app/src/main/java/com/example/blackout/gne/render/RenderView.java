@@ -26,7 +26,7 @@ public class RenderView extends View  {
 
         super(context, attrs);
         renderMap=new RenderMap();
-        this.height=getContext().getResources().getDisplayMetrics().heightPixels;
+        this.height=getContext().getResources().getDisplayMetrics().heightPixels-150;
         this.width=getContext().getResources().getDisplayMetrics().widthPixels;
 
     }
