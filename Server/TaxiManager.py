@@ -4,7 +4,7 @@ from Taxi import *
 import NetworkWebSocket
 import server
 import TaxiMove
-import math from *
+from math import srqt
 
 taxiManager = None
 ##	Manage all Taxis
@@ -138,3 +138,7 @@ class TaxiManager:
 			finishY = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeY + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeY)
 			distFinishToVertexFrom = sqrt((xb-taxiX)*(xb-taxiX)+(yb-taxiY)*(yb-taxiY))
 			distFinishToVertexTo = sqrt((taxiX-xa)*(taxiX-xa)+(taxiY-ya)*(taxiY-ya))
+	
+	# Launch move
+	#TaxiMove.taxiThread = TaxiMove.TaxiThread("666",path)
+	#TaxiMove.taxiThread.start()
