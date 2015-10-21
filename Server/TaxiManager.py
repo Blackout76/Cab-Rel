@@ -3,6 +3,7 @@ from MapManager import *
 from Taxi import *
 import NetworkWebSocket
 import server
+import TaxiMove
 
 taxiManager = None
 ##	Manage all Taxis
@@ -26,9 +27,29 @@ class TaxiManager:
 		loc_now = {}
 		#find the name of the first area in the arelist
 		loc_now["area"] = self.mapManagerTaxi.areasDict.values()[0].areaName
+		
 		loc_now["locationType"] = "vertex"
 		#find the name of the first vertex in the vertices dictionary
 		loc_now["location"] = self.mapManagerTaxi.areasDict.values()[0].verticesDict.values()[0].verticeName
+		
+		loc_now["locationType"] = "vertex"
+		#find the name of the first vertex in the vertices dictionary
+		loc_now["location"] = self.mapManagerTaxi.areasDict.values()[0].verticesDict.values()[0].verticeName
+		
+		
+		"""
+		#Start taxi in middle street
+		loc_now["locationType"] = "street"
+		loacationInStreet = {}
+		loacationInStreet["from"] = self.mapManagerTaxi.areasDict.values()[0].streetsDict.values()[0].streetVertices[0].verticeName
+		loacationInStreet["to"] = self.mapManagerTaxi.areasDict.values()[0].streetsDict.values()[0].streetVertices[1].verticeName
+		loacationInStreet["progression"] = 0.5
+		
+		loc_now["location"] = loacationInStreet
+		"""
+		
+		
+		
 		newTaxi["loc_now"] = loc_now
 		#initialise newTaxi["loc_prior"]
 		loc_prior = {}
@@ -83,6 +104,8 @@ class TaxiManager:
 			if self.taxiList[0].destination == None:
 				self.taxiList[0].destination = self.cabRequestList[0] 
 				cabInfoJson = self.toDictFormatCabRequest()
+				#TaxiMove.taxiThread = TaxiMove.TaxiThread("0",path)
+				#TaxiMove.taxiThread.start()
 				#NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
 		else:
 			print "del cab request and resend cabrequestslist"
@@ -92,7 +115,7 @@ class TaxiManager:
 
 	def onCabInfo(self):
 		cabInfoJson = self.toDictFormatTaxiList()
-		print cabInfoJson
+		#print cabInfoJson
 		#NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
 
 	def getCabInfo(self):
