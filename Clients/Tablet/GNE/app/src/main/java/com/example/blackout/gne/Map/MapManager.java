@@ -62,7 +62,6 @@ public class MapManager extends Observable {
 			nameNext = first;
 		if(nameNext != null && !nameNext.equals("")){
 			MainActivity.ihm.loadRender(nameNext);
-
 			MainActivity.ihm.postInvalidate();
 		}
 	}

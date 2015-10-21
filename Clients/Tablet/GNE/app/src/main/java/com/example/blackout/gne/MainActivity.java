@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity  {
 
         HTTP request=new HTTP();
         //request.delegate = this;
-        request.execute("http://172.30.1.104:8080/clientConnect");
+        request.execute("http://192.168.0.20:8181/clientConnect");
 
     }
 

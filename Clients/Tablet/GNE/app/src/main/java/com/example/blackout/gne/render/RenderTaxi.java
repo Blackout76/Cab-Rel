@@ -32,6 +32,7 @@ public class RenderTaxi {
     private String areaName;
 
 
+
 	public RenderTaxi (boolean isfree){
         position = new Point((int)(RenderView.width/2),(int)(RenderView.height/2));
         this.isfree=isfree;
@@ -54,18 +55,18 @@ public class RenderTaxi {
 	}
     public void setArea(String name)
     {
-
+        this.areaName=name;
     }
-    public void getName()
+    public String getName()
     {
             return this.areaName;
 
     }
 
 
+    public void setPosition(Point position) {
+        this.position.x = position.x;
+        this.position.y=position.y;
 
-	//@Override
-	public void update(Observable arg0, Object arg1) {
-		//TODO
-	}
+    }
 }

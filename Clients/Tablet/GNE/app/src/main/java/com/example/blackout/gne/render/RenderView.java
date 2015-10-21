@@ -15,8 +15,10 @@ import com.example.blackout.gne.General.CPoint;
 import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.Map.MapArea;
 
+import org.json.JSONObject;
+
 public class RenderView extends View  {
-    RenderMap renderMap;
+    public static RenderMap renderMap;
     public static float height, width;
     String name;
     public static int offSetBorder=30;
@@ -66,4 +68,5 @@ public class RenderView extends View  {
         }
         return true;
     }
+
 }

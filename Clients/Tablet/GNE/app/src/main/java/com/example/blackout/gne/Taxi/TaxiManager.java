@@ -37,7 +37,7 @@ public class TaxiManager {
                 MapArea area = MainActivity.mapManager.getAreaByName(requests.getJSONObject(i).get("area").toString());
 
                 if(((JSONObject)requests.getJSONObject(i).get("location")).get("locationType").toString().equals("street")){
-                    MapStreet street = area.getStreetByName( ((JSONObject) ((JSONObject)requests.getJSONObject(i).get("location")).get("location") ).get("name").toString() );
+                    MapStreet street = area.getStreetByName( ((JSONObject)requests.getJSONObject(i).get("location")).get("name").toString() );
                     float progression = Float.parseFloat( ((JSONObject) ((JSONObject)requests.getJSONObject(i).get("location")).get("location") ).get("progression").toString());
                     MapVertice originPoint = area.getVerticeByName( ((JSONObject) ((JSONObject)requests.getJSONObject(i).get("location")).get("location") ).get("from").toString() );
 
@@ -106,4 +106,6 @@ public class TaxiManager {
         	streetInfos.put("pourcentHeight", 0);
 		return streetInfos;
 	}
+
+
 }

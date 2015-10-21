@@ -7,6 +7,8 @@ import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.Map.MapArea;
 import com.example.blackout.gne.Taxi.TaxiRequest;
 
+import org.json.JSONObject;
+
 public class RenderMap {
     private RenderArea area;
 	
@@ -31,5 +33,9 @@ public class RenderMap {
 
     public void loadRender(int width, int height, String areaName) {
         area.loadArea(width, height, MainActivity.mapManager.getAreaByName(areaName));
+    }
+    public  void updateTaxiRenderPosition(JSONObject json)
+    {
+        this.area.updateTaxiRenderPosition(json);
     }
 }

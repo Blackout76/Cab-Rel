@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.blackout.gne.MainActivity;
 import com.example.blackout.gne.Taxi.TaxiRequest;
+import com.example.blackout.gne.render.RenderView;
 
 import org.java_websocket.WebSocketListener;
 import org.java_websocket.client.WebSocketClient;
@@ -46,7 +47,9 @@ public class WebSocket {
                         MainActivity.mapManager.loadMap(msgJSON);
                     else if (msgJSON.has("cabQueue"))
                         MainActivity.taxiManager.loadRequests(msgJSON);
-                   // Log.e("ertyu", ""+msgJSON);
+                    else if (msgJSON.has("cabInfo"))
+
+                        RenderView.renderMap.updateTaxiRenderPosition(msgJSON);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
