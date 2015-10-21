@@ -59,8 +59,8 @@ public class RenderArea  {
 	}
 
     private void renderTaxis(int scale_x, int scale_y, MapArea mapArea)
-    {
-        this.renderTaxi=new RenderTaxi();
+    {   boolean isfree=true;
+        this.renderTaxi=new RenderTaxi(isfree);
 
 
     }

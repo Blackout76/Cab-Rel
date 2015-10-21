@@ -34,11 +34,19 @@ public class MainActivity extends AppCompatActivity  {
         mapManager = new MapManager();
 
         ihm = (RenderView) findViewById(R.id.renderView);
-        Button button= (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button buttonN= (Button) findViewById(R.id.button);
+        Button buttonP=(Button) findViewById(R.id.button2);
+        buttonN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ihm.loadRender("Quartier Nord");
 
+            }
+        });
+        buttonP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ihm.loadRender("Quartier Sud");
             }
         });
 

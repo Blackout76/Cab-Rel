@@ -1,6 +1,7 @@
 package com.example.blackout.gne.render;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
@@ -29,7 +30,8 @@ public class RenderStreet{
 	public void render(Canvas canvas) {
 
 		Paint paint=new Paint();
-        paint.setStrokeWidth(4.0f);
+        paint.setStrokeWidth(10.0f);
+		paint.setColor(Color.DKGRAY);
         canvas.drawLine(pts[0].x, pts[0].y, pts[1].x, pts[1].y,paint );
 
 

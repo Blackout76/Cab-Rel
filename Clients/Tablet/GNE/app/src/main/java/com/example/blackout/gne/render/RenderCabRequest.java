@@ -13,6 +13,8 @@ public class RenderCabRequest {
 
     private CPoint position;
 
+
+
     public RenderCabRequest(CPoint position){
         this.position = new CPoint(position);
 

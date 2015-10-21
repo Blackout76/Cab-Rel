@@ -27,10 +27,12 @@ import java.util.Observable;
 public class RenderTaxi {
 
 	private Point position;
+    private boolean isfree;
 
 
-	public RenderTaxi (){
+	public RenderTaxi (boolean isfree){
         position = new Point((int)(RenderView.width/2),(int)(RenderView.height/2));
+        this.isfree=isfree;
 
 	}
     //{"cabInfo":{"loc_prior":{"location":"b","area":"Quartier Nord","locationType":"vertex"}
@@ -60,8 +62,14 @@ public class RenderTaxi {
 	public void render(Canvas canvas){
 
         Paint p=new Paint();
-        p.setColor(Color.YELLOW);
+        if(isfree)
+            p.setColor(Color.YELLOW);
+        else
+            p.setColor(Color.RED);
+
         canvas.drawCircle(position.x, position.y, 50, p);
+
+
 
 	}
 

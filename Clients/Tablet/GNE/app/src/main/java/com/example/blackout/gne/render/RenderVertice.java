@@ -47,21 +47,20 @@ public class RenderVertice {
 	}
 
 	//@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public void render(int iWidth, int iHeight,Canvas canvas
-    ) {
+	public void render(int iWidth, int iHeight,Canvas canvas) {
 		Paint p=new Paint();
 
-        //bridge=blue and classic point=red
+
 		if(isBridge) {
-            p.setColor(Color.BLUE);
+            p.setColor(Color.rgb(153,204,204));
         }
 		else {
-            p.setColor(Color.RED);
+            p.setColor(Color.rgb(255,153,51));
         }
 
         canvas.drawCircle(center.x , center.y , size, p);
 
-        //Color and size text
+        //Color and size text in vertice
         p.setColor(Color.WHITE);
         p.setTextSize(font_size);
 

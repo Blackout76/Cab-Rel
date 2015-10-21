@@ -28,6 +28,7 @@ public class MapManager extends Observable {
 		}
 		Log.i("MAP", "map generated !");
 		MainActivity.ihm.loadRender("Quartier Sud");
+
 	}
 
 
