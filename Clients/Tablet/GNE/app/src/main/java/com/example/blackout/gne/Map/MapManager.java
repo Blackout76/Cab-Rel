@@ -14,6 +14,7 @@ import java.util.Observable;
 
 public class MapManager extends Observable {
 	private HashMap<Object, MapArea> areas;
+	public static String areaToLoad = "";
 
 	@SuppressWarnings("unchecked")
 	public void loadMap(JSONObject mapJson) {
@@ -21,13 +22,16 @@ public class MapManager extends Observable {
 		try {
 			//JSONArray li=  (JSONArray)mapJson.get("areas");
 			JSONArray li = mapJson.getJSONArray("areas");
-			for (int i = 0; i < li.length(); i++)
+
+			for (int i = 0; i < li.length(); i++) {
 				this.areas.put(li.getJSONObject(i).get("name"), new MapArea(li.getJSONObject(i)));
+				areaToLoad=li.getJSONObject(i).getString("name");
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		Log.i("MAP", "map generated !");
-		MainActivity.ihm.loadRender("Quartier Sud");
+		MainActivity.ihm.loadRender(areaToLoad);
 
 	}
 
@@ -36,19 +40,30 @@ public class MapManager extends Observable {
 		return this.areas.get(name);
 	}
 
-/*
-	@Override
-	public void onWebSocketMessage(JSONObject json) {
-		try {
-			if (json.getJSONArray("areas") != null) {
-				this.loadMap(json);
-				JSONObject msgJSON = null;
-				//MainActivity.ihm.loadRender("Quartier Nord");
-				MainActivity.ihm.loadRender("Quartier Sud");
-				MainActivity.ihm.invalidate();
+	public void loadNextArea(){
+		String first = "";
+		String nameNext = "";
+		boolean found = false;
+		for(Object areaName : areas.keySet()){
+			if(found){
+				nameNext = areaName.toString();
+				break;
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+			if(!found){
+				if(first.equals(""))
+					first = areaName.toString();
+				if(areaName.equals(MainActivity.ihm.getNameOfActiveArea()))
+					found = true;
+			}
+
 		}
-	}*/
+
+		if(nameNext.equals(""))
+			nameNext = first;
+		if(nameNext != null && !nameNext.equals("")){
+			MainActivity.ihm.loadRender(nameNext);
+
+			MainActivity.ihm.postInvalidate();
+		}
+	}
 }

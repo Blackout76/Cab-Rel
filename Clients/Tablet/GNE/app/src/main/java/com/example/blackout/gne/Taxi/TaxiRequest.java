@@ -28,7 +28,7 @@ public class TaxiRequest {
 		this.area = MainActivity.mapManager.getAreaByName(MainActivity.ihm.getNameOfActiveArea());
 		this.street = this.area.getStreetByName((String) infos.get("streetName"));
 		this.originVertice = this.street.getPath().get((int) (((HashMap<String, Object>) infos.get("pointIntercept")).get("indexVertice")));
-		this.pourcentIntersect = (double) infos.get("pourcentHeight");
+		this.pourcentIntersect = Float.parseFloat(infos.get("pourcentHeight").toString());
 		this.intersectedPoint = new CPoint(Float.parseFloat(((HashMap<String, Object>) infos.get("pointIntercept")).get("x").toString()),
 				Float.parseFloat(((HashMap<String, Object>) infos.get("pointIntercept")).get("y").toString()));
 	}

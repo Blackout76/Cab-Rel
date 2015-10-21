@@ -18,21 +18,12 @@
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="North district"
+            android:text="Change district"
             android:id="@+id/button"
             android:height="40dp"
-            android:layout_weight="0.49" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="South district"
-            android:id="@+id/button2"
-            android:height="40dp"
-            android:layout_weight="0.49" />
+            android:singleLine="false" />
 
     </TableRow>
 

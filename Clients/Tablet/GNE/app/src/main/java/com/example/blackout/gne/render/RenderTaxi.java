@@ -22,12 +22,14 @@ import com.example.blackout.gne.R;
 import org.eclipse.jetty.util.resource.Resource;
 
 import java.util.Observable;
+import java.util.jar.Attributes;
 
 
 public class RenderTaxi {
 
 	private Point position;
     private boolean isfree;
+    private String areaName;
 
 
 	public RenderTaxi (boolean isfree){
@@ -35,29 +37,7 @@ public class RenderTaxi {
         this.isfree=isfree;
 
 	}
-    //{"cabInfo":{"loc_prior":{"location":"b","area":"Quartier Nord","locationType":"vertex"}
-    // ,"odometer":0,"loc_now":{"location":"b","area":"Quartier Nord","locationType":"vertex"},"destination":null}}
 
-    //{"cabQueue":[{"location":{"location":{"to":"b","progression":0.13879001140594482,"name":"mb","from":"m"},
-    //"area":"Quartier Nord","locationType":"street"},"area":"Quartier Nord"},
-    //{"location":{"location":{"to":"b","progression":0.42704629898071284,"name":"mb","from":"m"},
-    // "area":"Quartier Nord","locationType":"street"},"area":"Quartier Nord"},
-    // {"location":{"location":{"to":"m","progression":0.24911034107208252,"name":"mb","from":"b"},
-    // "area":"Quartier Nord","locationType":"street"},"area":"Quartier Nord"},
-    // {"location":{"location":{"to":"h","progression":0.468566107749939,"name":"mh","from":"m"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"},
-    // {"location":{"location":{"to":"h","progression":0.42052567005157465,"name":"mh","from":"m"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"},
-    // {"location":{"location":{"to":"h","progression":0.4806469202041625,"name":"mh","from":"m"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"},
-    // {"location":{"location":{"to":"h","progression":0.39263501167297366,"name":"mh","from":"m"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"},
-    // {"location":{"location":{"to":"m","progression":0.4904903769493103,"name":"mh","from":"h"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"},
-    // {"location":{"location":{"to":"m","progression":0.40247225761413574,"name":"mh","from":"h"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"},
-    // {"location":{"location":{"to":"m","progression":0.4028104662895202,"name":"mh","from":"h"},
-    // "area":"Quartier Sud","locationType":"street"},"area":"Quartier Sud"}]}
 	
 	public void render(Canvas canvas){
 
@@ -72,6 +52,15 @@ public class RenderTaxi {
 
 
 	}
+    public void setArea(String name)
+    {
+
+    }
+    public void getName()
+    {
+            return this.areaName;
+
+    }
 
 
 
