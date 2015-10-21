@@ -37,6 +37,9 @@ class DijkstraTree:
 				self.arcsList.append(arc)
 
 	def initDijkstra(self, startPoint):
+		self.distNode = []
+		self.prevNode = []
+		self.nodeLeft = []
 		for node in self.nodesList:
 			distNode = {}
 			distNode["vertex"] = node["vertex"]
@@ -94,11 +97,10 @@ class DijkstraTree:
 										nodeToUpdate = {}
 										nodeToUpdate = prevNodeCouple["node"]
 										if nodeToUpdate["vertex"] == node2["vertex"] and nodeToUpdate["area"] == node2["area"]:
-											print "toto1"
-											print currentNode
 											prevNode = prevNodeCouple["prevNode"]
 											prevNode["area"] = currentNode["area"]
 											prevNode["vertex"] = currentNode["vertex"]
+
 
 					elif node2["area"] == currentNode["area"] and node2["vertex"] == currentNode["vertex"]:
 						for node in self.distNode:
@@ -111,17 +113,36 @@ class DijkstraTree:
 										nodeToUpdate = {}
 										nodeToUpdate = prevNodeCouple["node"]
 										if nodeToUpdate["vertex"] == node1["vertex"] and nodeToUpdate["area"] == node1["area"]:
-											print "toto2"
-											print currentNode
 											prevNode = prevNodeCouple["prevNode"]
 											prevNode["area"] = currentNode["area"]
 											prevNode["vertex"] = currentNode["vertex"]
 			currentWeight = -1
 			self.nodeLeft.pop(nodeIndex)
 			cmptListId = -1
-
 		finalPath = self.findPath(endPoint)
 		return finalPath
 
 	def findPath(self, endPoint):
-		print "TODO"
+		finalPath = []
+		currentNode = {}
+		currentNode = endPoint
+		isPathFinding = False
+		toto = 0
+		while isPathFinding == False and toto != 10:
+			toto = toto + 1
+			isFind = False
+			for prevNodeCouple in self.prevNode:
+				node = {}
+				node = prevNodeCouple["node"]
+				prevNode = {}
+				prevNode = prevNodeCouple["prevNode"]
+				if node["vertex"] == currentNode["vertex"] and node["area"] ==  currentNode["area"] and isFind == False:
+					isFind = True
+					nodeToAdd = {}
+					nodeToAdd["vertex"] = currentNode["vertex"]
+					nodeToAdd["area"] = currentNode["area"]
+					finalPath.insert(0, nodeToAdd)
+					currentNode = prevNode
+					if node["vertex"] == prevNode["vertex"] and node["area"] ==  prevNode["area"]:
+						isPathFinding = True
+		return finalPath
