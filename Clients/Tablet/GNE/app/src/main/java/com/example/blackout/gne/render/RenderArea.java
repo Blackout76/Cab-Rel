@@ -102,6 +102,7 @@ public class RenderArea  {
             }
             else{
                 JSONObject jsonLocation = (JSONObject) ((JSONObject) ((JSONObject) json.get("cabInfo")).get("loc_now")).get("location");
+				area = MainActivity.mapManager.getAreaByName(((JSONObject) ((JSONObject) json.get("cabInfo")).get("loc_now")).get("area").toString());
 
                 MapVertice A = area.getVerticeByName(jsonLocation.get("from").toString());
                 MapVertice B = area.getVerticeByName(jsonLocation.get("to").toString());
