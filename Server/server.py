@@ -50,7 +50,7 @@ if __name__ == '__main__':
 	p3["vertex"] = "m"
 	path.append(p3)
 	
-	
+
 	TaxiMove.taxiThread = TaxiMove.TaxiThread("0",path)
 	TaxiMove.taxiThread.start()
 	"""
