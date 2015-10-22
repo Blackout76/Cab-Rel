@@ -145,31 +145,47 @@ class DijkstraTree:
 						for node in self.distNode:
 							#if node == node2
 							if node2["area"] == node["area"] and node2["vertex"] == node["vertex"]:
-								#calculate the actual 
+								#calculate the new theorical weight
 								tmpDist = arc["weight"]
 								tmpDist = tmpDist + currentWeight
+								#if the theorical weight is lower than the actual node dist update the dist and change the prevNode
 								if tmpDist < node["dist"] or node["dist"] < 0:
 									node["dist"] = tmpDist
+									#foreach node couple of node in prevNode
 									for prevNodeCouple in self.prevNode:
 										nodeToUpdate = {}
+										#nodeToUpdate = the node in the node couple
 										nodeToUpdate = prevNodeCouple["node"]
+										#if node2 == nodeToUpdate
 										if nodeToUpdate["vertex"] == node2["vertex"] and nodeToUpdate["area"] == node2["area"]:
+											#update the prevNode of nodeToUpdate
 											prevNode = prevNodeCouple["prevNode"]
+											#prevenode take current node
 											prevNode["area"] = currentNode["area"]
 											prevNode["vertex"] = currentNode["vertex"]
 
+					#if the current node is node1
 					elif node2["area"] == currentNode["area"] and node2["vertex"] == currentNode["vertex"]:
+						#for each node in node Dist find node2 of the arc
 						for node in self.distNode:
+							#if node == node1
 							if node1["area"] == node["area"] and node1["vertex"] == node["vertex"]:
+								#calculate the new theorical weight
 								tmpDist = arc["weight"]
 								tmpDist = tmpDist + currentWeight
+								#if the theorical weight is lower than the actual node dist update the dist and change the prevNode
 								if tmpDist < node["dist"] or node["dist"] < 0:
 									node["dist"] = tmpDist
+									#foreach node couple of node in prevNode
 									for prevNodeCouple in self.prevNode:
 										nodeToUpdate = {}
+										#nodeToUpdate = the node in the node couple
 										nodeToUpdate = prevNodeCouple["node"]
+										#if node1 == node to update
 										if nodeToUpdate["vertex"] == node1["vertex"] and nodeToUpdate["area"] == node1["area"]:
+											#update the prevNode of nodeToUpdate
 											prevNode = prevNodeCouple["prevNode"]
+											#prevenode take current node
 											prevNode["area"] = currentNode["area"]
 											prevNode["vertex"] = currentNode["vertex"]
 			#reset variable to do an other turn of dijkstra
