@@ -23,6 +23,11 @@ class TaxiThread(Thread):
 		self.progression = 0
 		self.increment = 0.05
 		
+		if self.endlocation["location"]["locationType"] == "street" and self.endlocation["location"]["location"]["to"] == self.path[len(self.path)-1]["vertex"]:
+			self.endlocation["location"]["location"]["to"] = self.endlocation["location"]["location"]["from"] 
+			self.endlocation["location"]["location"]["from"] = self.path[len(self.path)-1]["vertex"]
+			self.endlocation["location"]["location"]["progression"] = 1 - self.endlocation["location"]["location"]["progression"]
+			
 		print self.startLocation
 		if self.startLocation["locationType"] == "street":
 			self.startLocationPath = {}
@@ -44,9 +49,11 @@ class TaxiThread(Thread):
 			if len(self.path) == 1 :
 				if self.endlocation["location"]["locationType"] == "vertex" and self.endlocation["location"]["location"] == self.path[len(self.path)-1]["vertex"]:
 					print 'Cab arrived !'
+					TaxiManager.taxiManager.taxiList[0].destination == None
 					self.arrived = True
 				elif self.endlocation["location"]["locationType"] == "street" and self.endlocation["location"]["location"]["progression"] <= self.progression:
 					print 'Cab arrived !'
+					TaxiManager.taxiManager.taxiList[0].destination == None
 					self.arrived = True
 			self.executeTick()
 			
@@ -79,13 +86,14 @@ class TaxiThread(Thread):
 			loc_now["location"] = location
 			
 		
-		#print loc_now
+		print loc_now
 		TaxiManager.taxiManager.taxiList[0].loc_now.onUpdateLocation(loc_now, MapManager.mapManager)
 		TaxiManager.taxiManager.onCabInfo()
 	
 	def computeCabPosition (self):
 		areaA = MapManager.mapManager.areasDict[self.path[0]["area"]]
 		A = areaA.verticesDict[self.path[0]["vertex"]]
+		# print self.path
 		if len(self.path) == 1 :
 			if self.endlocation["location"]["locationType"] == "vertex":
 				return
