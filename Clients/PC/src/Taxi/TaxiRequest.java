@@ -17,12 +17,17 @@ public class TaxiRequest {
 	private MapVertice originVertice;
 	private MapStreet street;
 	private MapArea area;
+
+	public TaxiRequest (CPoint position, MapArea area){
+		this.intersectedPoint = new CPoint(position);
+		this.area = area;
+	}
 	
 	public TaxiRequest (HashMap<String, Object> infos){
 		this.area = Main.mapManager.getAreaByName(IHM.getNameOfActiveArea());
 		this.street = this.area.getStreetByName((String) infos.get("streetName"));
 		this.originVertice = this.street.getPath().get( (int)( ((HashMap<String, Object>)infos.get("pointIntercept")).get("indexVertice") ) );
-		this.pourcentIntersect = (double)infos.get("pourcentHeight");
+		this.pourcentIntersect = Double.parseDouble(infos.get("pourcentHeight").toString());
 		this.intersectedPoint = new CPoint( Float.parseFloat( ((HashMap<String, Object>)infos.get("pointIntercept")).get("x").toString() ),  
 				 							Float.parseFloat(((HashMap<String, Object>)infos.get("pointIntercept")).get("y").toString()	));
 	}
@@ -35,7 +40,7 @@ public class TaxiRequest {
 		
 		if(this.pourcentIntersect == 0){
 
-			locationMap.put("locationType", "street");
+			locationMap.put("locationType", "vertex");
 			locationMap.put("area", this.area.getName());
 			locationMap.put("location", this.originVertice.getName());
 		}
@@ -53,5 +58,13 @@ public class TaxiRequest {
 		infos.put("location", locationMap);
 		json.put("cabRequest", infos);
 		return json;
+	}
+
+	public CPoint getPosition() {
+		return this.intersectedPoint;
+	}
+
+	public MapArea getArea() {
+		return this.area;
 	}
 }
