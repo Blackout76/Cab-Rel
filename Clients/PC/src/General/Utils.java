@@ -2,6 +2,9 @@ package General;
 
 import java.util.HashMap;
 
+import Map.MapStreet;
+import Map.MapVertice;
+
 
 public class Utils {
 
@@ -50,6 +53,7 @@ public class Utils {
 		result.put("pointIntercept", computePointOfHeightIntercept((Double) result.get("distHeight"),A,B,C));
 		
 		/* Inverse origin point on street if %>50% */
+		/*
 		if((double)result.get("pourcentHeight") > 0.5){
 			result.put("pourcentHeight", 1-((double)result.get("pourcentHeight")) );
 			if( (int)((HashMap<String, Object>)result.get("pointIntercept")).get("indexVertice") == 1)
@@ -57,7 +61,7 @@ public class Utils {
 			else
 				((HashMap<String, Object>)result.get("pointIntercept")).put("indexVertice", 1);
 				
-		}
+		}*/
 			
 		return result;
 	}
@@ -90,5 +94,26 @@ public class Utils {
 		}
 		return result;
 	}
-	
+
+	public static CPoint computePointToProgression(MapVertice originPoint,MapStreet street, float progression) {
+		CPoint A = originPoint.toPoint();
+		CPoint B = null;
+		if(street.getPath().get(0).getName().equals(originPoint.getName()))
+			B = street.getPath().get(street.getPath().size()-1).toPoint();
+		else
+			B = street.getPath().get(0).toPoint(); 
+
+		double angle_absis = Utils.computeAngleOrient(A,B,new CPoint( (int)(A.getX()+50) , (int) A.getY() ));
+		double norme_AB = Math.sqrt(Math.pow(B.getX() - A.getX(), 2)+Math.pow(B.getY() - A.getY(), 2));
+		double dist_fromA = norme_AB * progression;
+
+		float x,y;
+		x = (float) (A.getX() + Math.cos(angle_absis*(Math.PI/180))*dist_fromA);
+		if(A.getY() >= B.getY()) 
+			y = (float) (A.getY() - Math.sin(angle_absis*(Math.PI/180))*dist_fromA);
+		else
+			y = (float) (A.getY() + Math.sin(angle_absis*(Math.PI/180))*dist_fromA);
+		
+		return new CPoint(x,y);
+	}
 }

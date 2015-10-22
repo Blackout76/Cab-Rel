@@ -50,7 +50,7 @@ public class MapArea {
 		}
 	}
 	
-	private MapVertice getVerticeByName(String name){
+	public MapVertice getVerticeByName(String name){
 		return this.vertices.get(name);
 	}
 

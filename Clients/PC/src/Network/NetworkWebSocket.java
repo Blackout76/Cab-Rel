@@ -54,8 +54,14 @@ public class NetworkWebSocket  {
     }
     public void executeMessage(JSONObject json){
     	//System.err.println(json.get("real"));
-    	if(json != null && json.get("areas") != null)
-    		Main.mapManager.loadMap(json);
+    	if(json != null){
+    		if(json.get("areas") != null)
+    			Main.mapManager.loadMap(json);
+    		else if(json.get("cabQueue") != null)
+    			Main.taxiManager.loadRequests(json);
+    		else if(json.get("cabInfo") != null)
+    			Main.renderer.area.updateTaxiRenderPosition(json);
+    	}
     }
     
     public void sendMessage(String message){

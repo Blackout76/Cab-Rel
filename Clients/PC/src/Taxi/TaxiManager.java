@@ -1,19 +1,53 @@
 package Taxi;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import org.json.simple.JSONObject;
 
 import General.Logger;
 import General.Logger.Logger_type;
 import General.Main;
 import General.CPoint;
 import General.Utils;
+import Map.MapArea;
 import Map.MapStreet;
+import Map.MapVertice;
 import Render.RenderArea;
 
 public class TaxiManager {
 
+	private ArrayList<TaxiRequest> taxiRequests = new ArrayList<>();
+	
+	public void loadRequests(JSONObject json){
+		taxiRequests = new ArrayList<>();
+		System.out.println(json);
+		ArrayList<JSONObject> requests = (ArrayList<JSONObject>) json.get("cabQueue");
+		for(JSONObject request : requests){
+			MapArea area = Main.mapManager.getAreaByName(request.get("area").toString());
+			if(((JSONObject)request.get("location")).get("locationType").toString().equals("street")){
+				MapStreet street = area.getStreetByName( ((JSONObject)request.get("location")).get("name").toString() );
+				float progression = Float.parseFloat( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("progression").toString());
+				MapVertice originPoint = area.getVerticeByName( ((JSONObject) ((JSONObject)request.get("location")).get("location") ).get("from").toString() );
+				
+				CPoint point = Utils.computePointToProgression(originPoint,street,progression);
+				taxiRequests.add(new TaxiRequest(point,area));
+			}
+			else{
+				MapVertice originPoint = area.getVerticeByName( ((JSONObject)request.get("location")).get("location").toString() );
+				taxiRequests.add(new TaxiRequest(originPoint.toPoint(),area));
+			}
+		}
+		Main.renderer.area.repaint();
+	}
+	// {"cabQueue": [{"location": {"locationType": "street", "location": {"to": "h", "from": "a", "name": "ah", "progression": 0.36903424263000484}, "area": "Quartier Sud"}, "area": "Quartier Sud"}, {"location": {"locationType": "street", "location": {"to": "a", "from": "h", "name": "ah", "progression": 0.47620534896850586}, "area": "Quartier Sud"}, "area": "Quartier Sud"}, {"location": {"locationType": "street", "location": {"to": "a", "from": "h", "name": "ah", "progression": 0.2872812509536744}, "area": "Quartier Sud"}, "area": "Quartier Sud"}]}
+	// {"location": {"locationType": "vertex", "location": "m", "area": "Quartier Nord"}, "area": "Quartier Nord"}
+	public ArrayList<TaxiRequest> getTaxiRequest(){
+		return this.taxiRequests;
+	}
+	
 	public void createRequestAtPoint(Point startPoint){
         TaxiRequest taxiRequest = new TaxiRequest(computeBestInterceptStreet(startPoint));
        	Logger.log(Logger_type.SUCCESS, "[tAXI]", "new taxi request created !");

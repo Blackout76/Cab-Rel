@@ -18,8 +18,7 @@ import General.Logger.Logger_type;
 import Map.MapManager;
 
 public class NetworkManager implements Runnable{
-	//private final String SERVER_URL = "http://37.187.127.119/clickn3D/WEB_services/request_client.php";
-	//private final String SERVER_URL = "http://172.30.1.184:8080/deviceConnect";
+	//private final String SERVER_URL = "http://172.30.1.104:8080/clientConnect";
 	private final String SERVER_URL = "http://0.0.0.0:8080/clientConnect";
 	private String SERVER_URI;
     private WebSocketClient client;
