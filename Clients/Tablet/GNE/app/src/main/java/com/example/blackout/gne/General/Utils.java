@@ -53,13 +53,13 @@ public class Utils {
 		result.put("pointIntercept", computePointOfHeightIntercept((Double) result.get("distHeight"),A,B,C));
 		
 		/* Inverse origin point on street if %>50% */
-		if((double)result.get("pourcentHeight") > 0.5){
+		/*if((double)result.get("pourcentHeight") > 0.5){
 			result.put("pourcentHeight", 1-((double)result.get("pourcentHeight")) );
 			if( (int)((HashMap<String, Object>)result.get("pointIntercept")).get("indexVertice") == 1)
 				((HashMap<String, Object>)result.get("pointIntercept")).put("indexVertice", 0);
 			else
 				((HashMap<String, Object>)result.get("pointIntercept")).put("indexVertice", 1);
-		}
+		}*/
 			
 		return result;
 	}
