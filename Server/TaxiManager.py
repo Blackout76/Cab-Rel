@@ -101,18 +101,21 @@ class TaxiManager:
 		return cabQueue
 
 	def onRequestAnswer(self, answer):
-		if answer == "yes":
-			if self.taxiList[0].destination == None:
-				self.taxiList[0].destination = self.cabRequestList[0] 
-				cabInfoJson = self.toDictFormatCabRequest()
-				NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
+		if len(self.cabRequestList) > 0:
+			if answer == "yes":
+				if self.taxiList[0].destination == None:
+					self.taxiList[0].destination = self.cabRequestList[0]
+					cabInfoJson = self.toDictFormatCabRequest()
+					NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabInfoJson)
+					print 'gne'
+					self.startMove()
+					self.cabRequestList.pop(0)
+			else:
 				self.cabRequestList.pop(0)
-				self.startMove()
+				NetworkWebSocket.server_WEBSOCKET.broadcastAll(self.toDictFormatCabRequest())
+				print 'b'
 		else:
-			self.cabRequestList.pop(0)
-			cabQueueJson = self.toDictFormatCabRequest
-			NetworkWebSocket.server_WEBSOCKET.broadcastAll(cabQueueJson)
-		self.cabRequestList.pop(0)
+			NetworkWebSocket.server_WEBSOCKET.broadcastAll(self.toDictFormatCabRequest())
 
 	def onCabInfo(self):
 		cabInfoJson = self.toDictFormatTaxiList()
@@ -140,7 +143,7 @@ class TaxiManager:
 			distFinishToVertexFrom = sqrt((self.taxiList[0].loc_now.vertexFrom.verticeX-finishX)*(self.taxiList[0].loc_now.vertexFrom.verticeX-finishX)+(self.taxiList[0].loc_now.vertexFrom.verticeY-finishY)*(self.taxiList[0].loc_now.vertexFrom.verticeY-finishY))
 			distFinishToVertexTo = sqrt((finishX-self.taxiList[0].loc_now.vertexTo.verticeX)*(finishX-self.taxiList[0].loc_now.vertexTo.verticeX)+(finishY-self.taxiList[0].loc_now.vertexTo.verticeY)*(finishY-self.taxiList[0].loc_now.vertexTo.verticeY))
 
-
+		
 		if self.taxiList[0].destination.locationRequest.locationType == "street":
 			if self.taxiList[0].loc_now.locationType == "street":
 				tmpPath = []
@@ -239,4 +242,7 @@ class TaxiManager:
 				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
 				path.pop(0)
 
+		print 'a'
+		TaxiMove.taxiThread = TaxiMove.TaxiThread("0",path)
+		TaxiMove.taxiThread.start()
 		return path
