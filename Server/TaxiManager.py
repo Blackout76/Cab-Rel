@@ -100,6 +100,8 @@ class TaxiManager:
 		cabQueue["cabQueue"] = cabRequests
 		return cabQueue
 
+	##	On answer request received to the device
+	#	@param answer answer return by the device on a request
 	def onRequestAnswer(self, answer):
 		if len(self.cabRequestList) > 0:
 			if answer == "yes":
@@ -126,27 +128,41 @@ class TaxiManager:
 
 	def getCabInfo(self):
 		return self.toDictFormatTaxiList()
-		
+	
+	##	Find the lowest path between 2 point
 	def startMove(self):
+		#initialise the distance between the taxi and his two nerest point
 		distTaxiToVertexFrom = 0.0
 		distTaxiToVertexTo = 0.0
+		#initialise the distance between the finish and his two nerest point
 		distFinishToVertexFrom = 0.0
 		distFinishToVertexTo = 0.0
 		path = []
+		#if the taxi is on a street, calculate the distance between the taxi and each street point
 		if self.taxiList[0].destination.locationRequest.locationType == "street":
+			#calculate the taxi x
 			taxiX = ((1-self.taxiList[0].destination.locationRequest.progression) * self.taxiList[0].destination.locationRequest.vertexFrom.verticeX + self.taxiList[0].destination.locationRequest.progression * self.taxiList[0].destination.locationRequest.vertexTo.verticeX)
+			#calculate the taxi y
 			taxiY = ((1-self.taxiList[0].destination.locationRequest.progression) * self.taxiList[0].destination.locationRequest.vertexFrom.verticeY + self.taxiList[0].destination.locationRequest.progression * self.taxiList[0].destination.locationRequest.vertexTo.verticeY)
+			#calulate the distance between the taxi and the from point from on the street
 			distTaxiToVertexFrom = sqrt((taxiX-self.taxiList[0].destination.locationRequest.vertexFrom.verticeX)*(taxiX-self.taxiList[0].destination.locationRequest.vertexFrom.verticeX)+(taxiY-self.taxiList[0].destination.locationRequest.vertexFrom.verticeY)*(taxiY-self.taxiList[0].destination.locationRequest.vertexFrom.verticeY))
+			#calulate the distance between the taxi and the from point to on the street
 			distTaxiToVertexTo = sqrt((self.taxiList[0].destination.locationRequest.vertexTo.verticeX-taxiX)*(self.taxiList[0].destination.locationRequest.vertexTo.verticeX-taxiX)+(self.taxiList[0].destination.locationRequest.vertexTo.verticeY-taxiY)*(self.taxiList[0].destination.locationRequest.vertexTo.verticeY-taxiY))
 
+		#if the finish is on a street, calculate the distance between the taxi and each street point
 		if self.taxiList[0].loc_now.locationType == "street":
+			#calculate the finish x
 			finishX = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeX + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeX)
+			#calculate the finish y
 			finishY = ((1-self.taxiList[0].loc_now.progression) * self.taxiList[0].loc_now.vertexFrom.verticeY + self.taxiList[0].loc_now.progression * self.taxiList[0].loc_now.vertexTo.verticeY)
+			#calulate the distance between the finish and the from point from on the street
 			distFinishToVertexFrom = sqrt((self.taxiList[0].loc_now.vertexFrom.verticeX-finishX)*(self.taxiList[0].loc_now.vertexFrom.verticeX-finishX)+(self.taxiList[0].loc_now.vertexFrom.verticeY-finishY)*(self.taxiList[0].loc_now.vertexFrom.verticeY-finishY))
+			#calulate the distance between the finish and the from point to on the street
 			distFinishToVertexTo = sqrt((finishX-self.taxiList[0].loc_now.vertexTo.verticeX)*(finishX-self.taxiList[0].loc_now.vertexTo.verticeX)+(finishY-self.taxiList[0].loc_now.vertexTo.verticeY)*(finishY-self.taxiList[0].loc_now.vertexTo.verticeY))
 
-		
+		#if the taxi is on a street		
 		if self.taxiList[0].destination.locationRequest.locationType == "street":
+			#if the finish is on a street select the best dijkstra of four
 			if self.taxiList[0].loc_now.locationType == "street":
 				tmpPath = []
 				endPoint = {}
@@ -195,6 +211,7 @@ class TaxiManager:
 
 				path = tmpPath
 				path.pop(0)
+			#if the finish is on a vertex select the best dijkstra of two
 			else:
 				tmpPath = []
 				endPoint = {}
@@ -218,7 +235,9 @@ class TaxiManager:
 						tmpPath.append(item)
 				path = tmpPath
 				path.pop(0)
+		#if the taxi is on a vertex select the best dijkstra of two
 		else:
+			#if the finish is on a street
 			if self.taxiList[0].loc_now.locationType == "street":
 				tmpPath = []
 				endPoint = {}
@@ -242,6 +261,7 @@ class TaxiManager:
 						tmpPath.append(item)
 				path = tmpPath
 				path.pop(0)
+			#if the finish is on a vertex
 			else:
 				endPoint = {}
 				startPoint = {}
@@ -251,7 +271,8 @@ class TaxiManager:
 				startPoint["vertex"] = self.taxiList[0].loc_now.location.verticeName
 				path = self.mapManagerTaxi.dijkstraTree.findShortestPath(startPoint, endPoint)
 				path.pop(0)
-
+		#start the thread to start the taxi mouvement
 		TaxiMove.taxiThread = TaxiMove.TaxiThread("0",path)
+		#start the taxi mouvement on the client
 		TaxiMove.taxiThread.start()
 		return path
