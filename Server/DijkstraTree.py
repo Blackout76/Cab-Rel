@@ -128,19 +128,24 @@ class DijkstraTree:
 							currentNode["vertex"] = node["vertex"]
 							currentNode["area"] = node["area"]
 							nodeIndex = cmptListId
-
+			#if the current node is the final node stop the algorithm
 			if currentNode["vertex"] == endPoint["vertex"] and currentNode["area"] == endPoint["area"]:
 				endIsFound = True
-
+			#if the end node is not find continu the algorithm
 			if endIsFound == False:
+				#foreach arc in the arc List try to find the current node
 				for arc in self.arcsList:
 					node1 = {}
 					node1 = arc["node1"]
 					node2 = {}
 					node2 = arc["node2"]
+					#if the current node is node1
 					if node1["area"] == currentNode["area"] and node1["vertex"] == currentNode["vertex"]:
+						#for each node in node Dist find node2 of the arc
 						for node in self.distNode:
+							#if node == node2
 							if node2["area"] == node["area"] and node2["vertex"] == node["vertex"]:
+								#calculate the actual 
 								tmpDist = arc["weight"]
 								tmpDist = tmpDist + currentWeight
 								if tmpDist < node["dist"] or node["dist"] < 0:
@@ -175,7 +180,7 @@ class DijkstraTree:
 		#end while len(self.nodeLeft) > 0 and endIsFound == False:
 
 		finalPath = self.findPath(endPoint)
-		finalPath.append(finalWeight)
+		finalPath.insert(0, finalWeight)
 		print finalPath
 		return finalPath
 
