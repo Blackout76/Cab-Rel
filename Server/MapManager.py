@@ -20,7 +20,7 @@ class MapManager:
 	##	Load a json file to make the map
 	def loadFileMap(self):
 		#open file map.json
-		jsonMap = open('map.json')
+		jsonMap = open('map2.json')
 		#convert the json map to a dictionary
 		data = json.load(jsonMap)
 		self.loadJsonMap(data)
