@@ -1,8 +1,9 @@
 import json
 from pprint import pprint
 from Area import *
+from DijkstraTree import *
 
-
+mapManager = None
 
 ##	Manage the map
 #
@@ -14,20 +15,21 @@ class MapManager:
 		#memeber initialisation
 		self.mapName = name
 		self.areasDict = {}
+		self.dijkstraTree = None
 
 	##	Load a json file to make the map
-	def LoadFileMap(self):
+	def loadFileMap(self):
 		#open file map.json
-		jsonMap = open('map.json')
+		jsonMap = open('map2.json')
 		#convert the json map to a dictionary
 		data = json.load(jsonMap)
-		self.LoadJsonMap(data)
+		self.loadJsonMap(data)
 		#close the map.json file
 		jsonMap.close()
 
 	##	Load a json to make the map
 	#	@param data dictionary witch contain the map
-	def LoadJsonMap(self, data):
+	def loadJsonMap(self, data):
 		#take the map in the data dictionary
 		mapData = data["areas"]
 		#initialise areas
@@ -39,15 +41,26 @@ class MapManager:
 		#for all areas in the list areas
 		for newAreaJson in areas:
 			#initialise a new area
-			newArea = area(newAreaJson)
+			newArea = Area(newAreaJson)
 			self.areasDict[newAreaJson["name"]] = newArea
+		self.initTree()
 
 	##	Return the map to format json
-	def ToJsonFormat(self):
+	def toDictFormat(self):
 		#the list of areas
-		areas = []
+		areasList = []
+		areas = {}
 		#for all areas in self.areasDict
 		for areasToJson in self.areasDict:
 			#format the areas to json
-			areas.append(self.areasDict[areasToJson].ToJsonFormat())
-		return json.dumps(areas)
+			areasList.append(self.areasDict[areasToJson].toDictFormat())
+		areas["areas"] = areasList
+		return areas
+
+	#def findShortestRoad(self, pointA, pointB):
+	def initTree(self):
+		self.dijkstraTree = DijkstraTree(self.areasDict)
+
+
+
+

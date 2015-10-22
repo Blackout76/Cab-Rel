@@ -1,15 +1,70 @@
 package Taxi;
 
-import java.awt.Point;
+import java.util.HashMap;
+
+import org.json.simple.JSONObject;
+
+import General.CPoint;
+import General.Main;
+import Map.MapArea;
+import Map.MapStreet;
+import Map.MapVertice;
+import Render.IHM;
 
 public class TaxiRequest {
-	private Point requestPoint;
-	
-	public TaxiRequest (Point requestPoint){
-		//this.requestPoint;
+	private CPoint intersectedPoint;
+	private double pourcentIntersect;
+	private MapVertice originVertice;
+	private MapStreet street;
+	private MapArea area;
+
+	public TaxiRequest (CPoint position, MapArea area){
+		this.intersectedPoint = new CPoint(position);
+		this.area = area;
 	}
 	
-	public Point getRequestPoint(){
-		return this.requestPoint;
+	public TaxiRequest (HashMap<String, Object> infos){
+		this.area = Main.mapManager.getAreaByName(IHM.getNameOfActiveArea());
+		this.street = this.area.getStreetByName((String) infos.get("streetName"));
+		this.originVertice = this.street.getPath().get( (int)( ((HashMap<String, Object>)infos.get("pointIntercept")).get("indexVertice") ) );
+		this.pourcentIntersect = Double.parseDouble(infos.get("pourcentHeight").toString());
+		this.intersectedPoint = new CPoint( Float.parseFloat( ((HashMap<String, Object>)infos.get("pointIntercept")).get("x").toString() ),  
+				 							Float.parseFloat(((HashMap<String, Object>)infos.get("pointIntercept")).get("y").toString()	));
+	}
+	
+	public JSONObject toJSON(){
+		JSONObject json = new JSONObject();
+		JSONObject locationMap = new JSONObject();
+		JSONObject locationIntercept = new JSONObject();
+		JSONObject infos = new JSONObject();
+		
+		if(this.pourcentIntersect == 0){
+
+			locationMap.put("locationType", "vertex");
+			locationMap.put("area", this.area.getName());
+			locationMap.put("location", this.originVertice.getName());
+		}
+		else{
+			locationIntercept.put("from", this.originVertice.getName());
+			locationIntercept.put("to", this.street.getOposedVerticeFromVertice(this.originVertice.getName()));
+			locationIntercept.put("progression", this.pourcentIntersect);
+			locationIntercept.put("name", this.street.getName());
+			
+			locationMap.put("locationType", "street");
+			locationMap.put("area", this.area.getName());
+			locationMap.put("location", locationIntercept);
+		}
+		infos.put("area", this.area.getName());
+		infos.put("location", locationMap);
+		json.put("cabRequest", infos);
+		return json;
+	}
+
+	public CPoint getPosition() {
+		return this.intersectedPoint;
+	}
+
+	public MapArea getArea() {
+		return this.area;
 	}
 }

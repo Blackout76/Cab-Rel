@@ -1,6 +1,6 @@
 package Map;
 
-import org.json.simple.JSONObject;
+import General.CPoint;
 
 public class MapVertice {
 	private String name;
@@ -21,5 +21,12 @@ public class MapVertice {
 	}
 	public float getY(){
 		return this.y;
+	}
+
+	public CPoint toPoint() {
+		CPoint p = new CPoint();
+		p.x = this.x;
+		p.y = this.y;
+		return p;
 	}
 }

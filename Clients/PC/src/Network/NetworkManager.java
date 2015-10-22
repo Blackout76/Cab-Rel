@@ -1,6 +1,7 @@
 package Network;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.TimeUnit;
@@ -9,13 +10,16 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import General.Logger;
 import General.Logger.Logger_type;
 import Map.MapManager;
 
 public class NetworkManager implements Runnable{
-	private final String SERVER_URL = "http://37.187.127.119/clickn3D/WEB_services/request_client.php";
+	//private final String SERVER_URL = "http://172.30.1.104:8080/clientConnect";
+	private final String SERVER_URL = "http://0.0.0.0:8080/clientConnect";
 	private String SERVER_URI;
     private WebSocketClient client;
     private NetworkWebSocket webSocket;
@@ -30,8 +34,11 @@ public class NetworkManager implements Runnable{
     	httpClient.start();
     	ContentResponse response = httpClient.GET(this.SERVER_URL);
     	if(response.getContentAsString() != null){
-            Logger.log(Logger_type.SUCCESS, "NetWork", "URI: "+ response.getContentAsString() + " !");
-    		return response.getContentAsString();
+           JSONParser parser = new JSONParser();
+	       JSONObject json = null;
+	       try { json = (JSONObject) parser.parse(response.getContentAsString());} catch (ParseException e) {}
+            Logger.log(Logger_type.SUCCESS, "NetWork HTTP", "URI: "+ json.get("addr").toString() + " !");
+    		return json.get("addr").toString();
     	}
 		return null;
 	}
@@ -42,7 +49,7 @@ public class NetworkManager implements Runnable{
 		
         try {
             client.start();
-            URI echoUri = new URI(uri);
+            URI echoUri = new URI(String.format(uri, null));
             client.connect(webSocket, echoUri);
             webSocket.awaitClose(1, TimeUnit.HOURS);
         } catch (Throwable t) {
@@ -77,8 +84,8 @@ public class NetworkManager implements Runnable{
     	ConnectToSocket(this.SERVER_URI);
 	}
 
-	public void addObserver(Observer mapManager) {
-		if(this.webSocket != null)
-			this.webSocket.addObserver(mapManager);
+	public void sendTaxiRequest(JSONObject json) {
+		this.webSocket.sendMessage(json.toJSONString());
 	}
+
 }

@@ -16,8 +16,10 @@ public class RenderTaxi implements Observer{
 	private final String fileURL = "images/taxi.png";
 	private Image img;
 	private Point position;
+	private String areaName;
+	
 	public RenderTaxi (){
-		position = new Point(IHM.windowWidth/2,IHM.windowHeight/2);
+		position = new Point(RenderArea.width/2,RenderArea.height/2);
 	    img = Toolkit.getDefaultToolkit().getImage(fileURL);
 	}
 	
@@ -28,5 +30,18 @@ public class RenderTaxi implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		//TODO
+	}
+	
+	public void setPosition(Point p){
+		this.position.x = (int) p.getX();
+		this.position.y = (int) p.getY();
+	}
+
+	public void setArea(String name) {
+		this.areaName = name;
+	}
+
+	public String getName() {
+		return this.areaName;
 	}
 }
